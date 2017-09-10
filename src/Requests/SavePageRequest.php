@@ -32,7 +32,7 @@ class SavePageRequest extends FormRequest
             'meta.og:title.max' => 'Поле «og:title» не должно превышать 255 символов',
             'meta.og:description.max' => 'Поле «og:description» не должно превышать 255 символов',
 
-            'og_image.crop.default.crop_size' => 'Фиксированный размер области — 968x475 пикселей',
+            'og_image.crop.default.crop_size' => 'Минимальный размер области — 968x475 пикселей',
             'og_image.crop.default.json' => 'Область отображения должна быть представлена в виде JSON',
 
             'title.required' => 'Поле «Заголовок» обязательно для заполнения',
@@ -70,7 +70,7 @@ class SavePageRequest extends FormRequest
             'meta.og:title' => 'max:255',
             'meta.og:description' => 'max:255',
 
-            'og_image.crop.default' => 'nullable|json|crop_size:968,475,fixed',
+            'og_image.crop.default' => 'nullable|json|crop_size:968,475,min',
 
             'title' => 'required|max:255',
             'slug' => 'required|alpha_dash|max:255|unique:pages,slug,'.$request->get('page_id'),
