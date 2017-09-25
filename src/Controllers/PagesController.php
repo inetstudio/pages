@@ -269,6 +269,8 @@ class PagesController extends Controller
         foreach ($images as $name) {
             $properties = $request->get($name);
 
+            \Event::fire('inetstudio.images.cache.clear', $name.'_'.md5(get_class($item).$item->id));
+
             if (isset($properties['images'])) {
                 $item->clearMediaCollectionExcept($name, $properties['images']);
 
