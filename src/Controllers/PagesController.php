@@ -202,6 +202,8 @@ class PagesController extends Controller
         $this->saveTags($item, $request);
         $this->saveImages($item, $request, ['og_image', 'preview', 'content']);
 
+        \Event::fire('inetstudio.pages.cache.clear', $item);
+
         Session::flash('success', 'Страница «'.$item->title.'» успешно '.$action);
 
         return redirect()->to(route('back.pages.edit', $item->fresh()->id));
@@ -219,6 +221,8 @@ class PagesController extends Controller
             foreach ($request->get('meta') as $key => $value) {
                 $item->updateMeta($key, $value);
             }
+
+            \Event::fire('inetstudio.seo.cache.clear', $item);
         }
     }
 
@@ -297,6 +301,9 @@ class PagesController extends Controller
                         $cropData = json_decode($cropJSON, true);
 
                         foreach (config('pages.images.conversions.'.$name.'.'.$key) as $conversion) {
+
+                            \Event::fire('inetstudio.images.cache.clear', $conversion['name'].'_'.md5(get_class($item).$item->id));
+
                             $manipulations[$conversion['name']] = [
                                 'manualCrop' => implode(',', [
                                     round($cropData['width']),
