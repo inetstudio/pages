@@ -13,6 +13,7 @@ use InetStudio\Categories\Traits\HasCategories;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
+use InetStudio\SimpleCounters\Traits\HasSimpleCountersTrait;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 
 /**
@@ -65,6 +66,7 @@ class PageModel extends Model implements HasMediaConversions
     use HasMediaTrait;
     use RevisionableTrait;
     use SluggableScopeHelpers;
+    use HasSimpleCountersTrait;
 
     const HREF = '/page/';
 
