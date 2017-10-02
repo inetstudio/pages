@@ -55,6 +55,14 @@ return [
                             'width' => 140,
                         ],
                     ],
+                    [
+                        'name' => 'content_front',
+                        'quality' => 70,
+                        'fit' => [
+                            'width' => 768,
+                            'height' => 512,
+                        ],
+                    ],
                 ],
             ],
         ]

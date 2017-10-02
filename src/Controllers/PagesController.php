@@ -292,7 +292,7 @@ class PagesController extends Controller
                     }
 
                     $item->update([
-                        $name => str_replace($image['src'], '/img/' . $media->id, $item[$name]),
+                        $name => str_replace($image['src'], $media->getFullUrl('content_front'), $item[$name]),
                     ]);
                 }
             } else {
