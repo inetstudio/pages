@@ -202,7 +202,7 @@ class PagesController extends Controller
         $this->saveTags($item, $request);
         $this->saveImages($item, $request, ['og_image', 'preview', 'content']);
 
-        \Event::fire('inetstudio.pages.cache.clear', $item);
+        \Event::fire('inetstudio.pages.cache.clear', $item->slug);
 
         Session::flash('success', 'Страница «'.$item->title.'» успешно '.$action);
 
@@ -362,7 +362,12 @@ class PagesController extends Controller
     public function destroy($id = null)
     {
         if (! is_null($id) && $id > 0 && $item = PageModel::find($id)) {
+
+            $slug = $item->slug;
+
             $item->delete();
+
+            \Event::fire('inetstudio.pages.cache.clear', $slug);
 
             return response()->json([
                 'success' => true,
