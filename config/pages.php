@@ -22,7 +22,7 @@ return [
                 'info' => false,
                 'searchDelay' => 350,
                 'language' => [
-                    'url' => asset('admin/js/plugins/datatables/locales/russian.json'),
+                    'url' => '/admin/js/plugins/datatables/locales/russian.json',
                 ],
             ],
         ],
