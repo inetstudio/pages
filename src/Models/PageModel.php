@@ -4,6 +4,7 @@ namespace InetStudio\Pages\Models;
 
 use Spatie\Tags\HasTags;
 use Cocur\Slugify\Slugify;
+use Spatie\MediaLibrary\Media;
 use Phoenix\EloquentMeta\MetaTrait;
 use InetStudio\Tags\Models\TagModel;
 use Illuminate\Database\Eloquent\Model;
@@ -156,8 +157,10 @@ class PageModel extends Model implements HasMediaConversions
 
     /**
      * Регистрируем преобразования изображений.
+     *
+     * @param Media|null $media
      */
-    public function registerMediaConversions()
+    public function registerMediaConversions(Media $media = null)
     {
         $quality = (config('pages.images.quality')) ? config('pages.images.quality') : 75;
 

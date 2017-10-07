@@ -3,7 +3,7 @@
 namespace InetStudio\Pages\Controllers;
 
 use Illuminate\Http\Request;
-use Yajra\Datatables\Datatables;
+use Yajra\DataTables\DataTables;
 use App\Http\Controllers\Controller;
 use InetStudio\Pages\Models\PageModel;
 use Illuminate\Support\Facades\Session;
@@ -33,10 +33,10 @@ class PagesController extends Controller
     /**
      * Список страниц.
      *
-     * @param Datatables $dataTable
+     * @param DataTables $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Datatables $dataTable)
+    public function index(DataTables $dataTable)
     {
         $table = $this->generateTable($dataTable, 'pages', 'index');
 
@@ -52,9 +52,9 @@ class PagesController extends Controller
     {
         $items = PageModel::query();
 
-        return Datatables::of($items)
+        return DataTables::of($items)
             ->setTransformer(new PageTransformer)
-            ->escapeColumns(['actions'])
+            ->rawColumns(['actions'])
             ->make();
     }
 
@@ -87,11 +87,11 @@ class PagesController extends Controller
     /**
      * Редактирование страницы.
      *
-     * @param Datatables $dataTable
+     * @param DataTables $dataTable
      * @param null $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit(Datatables $dataTable, $id = null)
+    public function edit(DataTables $dataTable, $id = null)
     {
         if (! is_null($id) && $id > 0 && $item = PageModel::find($id)) {
             $categories = CategoryModel::getTree();
