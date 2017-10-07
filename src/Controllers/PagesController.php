@@ -159,7 +159,6 @@ class PagesController extends Controller
     public function destroy($id = null)
     {
         if (! is_null($id) && $id > 0 && $item = PageModel::find($id)) {
-
             $slug = $item->slug;
 
             $item->delete();
