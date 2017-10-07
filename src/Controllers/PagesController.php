@@ -87,25 +87,17 @@ class PagesController extends Controller
     /**
      * Редактирование страницы.
      *
-     * @param DataTables $dataTable
      * @param null $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit(DataTables $dataTable, $id = null)
+    public function edit($id = null)
     {
         if (! is_null($id) && $id > 0 && $item = PageModel::find($id)) {
             $categories = CategoryModel::getTree();
 
-            $table = $dataTable->getHtmlBuilder();
-
-            $table->columns($this->getColumns('products'));
-            $table->ajax($this->getAjaxOptions('products', 'embedded'));
-            $table->parameters($this->getTableParameters());
-
             return view('admin.module.pages::pages.form', [
                 'item' => $item,
                 'categories' => $categories,
-                'productsTable' => $table,
             ]);
         } else {
             abort(404);
