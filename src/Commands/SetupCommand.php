@@ -32,7 +32,7 @@ class SetupCommand extends Command
      *
      * @return void
      */
-    public function fire()
+    public function handle()
     {
         $this->initCommands();
 
@@ -65,11 +65,6 @@ class SetupCommand extends Command
             [
                 'description' => 'Migration',
                 'command' => 'migrate',
-                'params' => [],
-            ],
-            [
-                'description' => 'Optimize',
-                'command' => 'optimize',
                 'params' => [],
             ],
             [

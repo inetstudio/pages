@@ -10,14 +10,21 @@
       }
     ],
     "require": {
-      "inetstudio/admin-panel": "1.4.*",
-      "inetstudio/categories": "1.4.*",
-      "inetstudio/tags": "1.4.*",
-      "inetstudio/polls": "1.4.*"
+      "inetstudio/admin-panel": "1.5.*",
+      "inetstudio/categories": "1.5.*",
+      "inetstudio/tags": "1.5.*",
+      "inetstudio/polls": "1.5.*"
     },
     "autoload": {
       "psr-4": {
         "InetStudio\\Pages\\": "src/"
+      }
+    },
+    "extra": {
+      "laravel": {
+        "providers": [
+          "InetStudio\\Pages\\PagesServiceProvider"
+        ]
       }
     }
 }
