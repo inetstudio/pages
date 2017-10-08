@@ -4,6 +4,7 @@ namespace InetStudio\Pages\Models;
 
 use Spatie\Tags\HasTags;
 use Cocur\Slugify\Slugify;
+use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\Media;
 use Phoenix\EloquentMeta\MetaTrait;
 use InetStudio\Tags\Models\TagModel;
@@ -62,6 +63,7 @@ class PageModel extends Model implements HasMediaConversions
     use HasTags;
     use MetaTrait;
     use Sluggable;
+    use Searchable;
     use SoftDeletes;
     use HasCategories;
     use HasMediaTrait;
@@ -99,6 +101,26 @@ class PageModel extends Model implements HasMediaConversions
     ];
 
     protected $revisionCreationsEnabled = true;
+
+    /**
+     * Настройка полей для поиска.
+     *
+     * @return array
+     */
+    public function toSearchableArray()
+    {
+        $arr = array_only($this->toArray(), ['id', 'title', 'description', 'content']);
+
+        $arr['categories'] = $this->categories->map(function ($item) {
+            return array_only($item->toSearchableArray(), ['id', 'title']);
+        })->toArray();
+
+        $arr['tags'] = $this->tags->map(function ($item) {
+            return array_only($item->toSearchableArray(), ['id', 'name']);
+        })->toArray();
+
+        return $arr;
+    }
 
     /**
      * Возвращаем конфиг для генерации slug модели.

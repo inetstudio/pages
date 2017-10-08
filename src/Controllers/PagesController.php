@@ -143,6 +143,9 @@ class PagesController extends Controller
         $this->saveTags($item, $request);
         $this->saveImages($item, $request, ['og_image', 'preview', 'content'], 'pages');
 
+        // Обновление поискового индекса.
+        $item->searchable();
+
         \Event::fire('inetstudio.pages.cache.clear', $item->slug);
 
         Session::flash('success', 'Страница «'.$item->title.'» успешно '.$action);
