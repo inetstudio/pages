@@ -9,13 +9,13 @@ use InetStudio\Pages\Models\PageModel;
 use Illuminate\Support\Facades\Session;
 use InetStudio\Pages\Requests\SavePageRequest;
 use InetStudio\Categories\Models\CategoryModel;
-use InetStudio\AdminPanel\Traits\DatatablesTrait;
 use InetStudio\Pages\Transformers\PageTransformer;
 use InetStudio\Tags\Traits\TagsManipulationsTrait;
 use Cviebrock\EloquentSluggable\Services\SlugService;
-use InetStudio\AdminPanel\Traits\MetaManipulationsTrait;
-use InetStudio\AdminPanel\Traits\ImagesManipulationsTrait;
 use InetStudio\Categories\Traits\CategoriesManipulationsTrait;
+use InetStudio\AdminPanel\Http\Controllers\Back\Traits\DatatablesTrait;
+use InetStudio\AdminPanel\Http\Controllers\Back\Traits\MetaManipulationsTrait;
+use InetStudio\AdminPanel\Http\Controllers\Back\Traits\ImagesManipulationsTrait;
 
 /**
  * Контроллер для управления страницами.
