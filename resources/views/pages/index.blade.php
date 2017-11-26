@@ -1,4 +1,4 @@
-@extends('admin::layouts.app')
+@extends('admin::back.layouts.app')
 
 @php
     $title = 'Страницы';
