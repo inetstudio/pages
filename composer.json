@@ -23,7 +23,7 @@
     "extra": {
       "laravel": {
         "providers": [
-          "InetStudio\\Pages\\PagesServiceProvider"
+          "InetStudio\\Pages\\Providers\\PagesServiceProvider"
         ]
       }
     }

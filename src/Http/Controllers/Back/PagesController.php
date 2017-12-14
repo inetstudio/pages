@@ -1,21 +1,24 @@
 <?php
 
-namespace InetStudio\Pages\Controllers;
+namespace InetStudio\Pages\Http\Controllers\Back;
 
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use InetStudio\Pages\Models\PageModel;
 use Illuminate\Support\Facades\Session;
-use InetStudio\Pages\Requests\SavePageRequest;
 use InetStudio\Categories\Models\CategoryModel;
 use InetStudio\Pages\Transformers\PageTransformer;
 use InetStudio\Tags\Traits\TagsManipulationsTrait;
 use Cviebrock\EloquentSluggable\Services\SlugService;
-use InetStudio\Categories\Traits\CategoriesManipulationsTrait;
+use InetStudio\Pages\Http\Requests\Back\SavePageRequest;
 use InetStudio\AdminPanel\Http\Controllers\Back\Traits\DatatablesTrait;
 use InetStudio\AdminPanel\Http\Controllers\Back\Traits\MetaManipulationsTrait;
 use InetStudio\AdminPanel\Http\Controllers\Back\Traits\ImagesManipulationsTrait;
+use InetStudio\Categories\Http\Controllers\Back\Traits\CategoriesManipulationsTrait;
 
 /**
  * Контроллер для управления страницами.
@@ -36,11 +39,11 @@ class PagesController extends Controller
      * @param DataTables $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(DataTables $dataTable)
+    public function index(DataTables $dataTable): View
     {
         $table = $this->generateTable($dataTable, 'pages', 'index');
 
-        return view('admin.module.pages::pages.index', compact('table'));
+        return view('admin.module.pages::back.pages.index', compact('table'));
     }
 
     /**
@@ -63,11 +66,11 @@ class PagesController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create()
+    public function create(): View
     {
         $categories = CategoryModel::getTree();
 
-        return view('admin.module.pages::pages.form', [
+        return view('admin.module.pages::back.pages.form', [
             'item' => new PageModel(),
             'categories' => $categories,
         ]);
@@ -79,7 +82,7 @@ class PagesController extends Controller
      * @param SavePageRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(SavePageRequest $request)
+    public function store(SavePageRequest $request): RedirectResponse
     {
         return $this->save($request);
     }
@@ -90,12 +93,12 @@ class PagesController extends Controller
      * @param null $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id = null)
+    public function edit($id = null): View
     {
         if (! is_null($id) && $id > 0 && $item = PageModel::find($id)) {
             $categories = CategoryModel::getTree();
 
-            return view('admin.module.pages::pages.form', [
+            return view('admin.module.pages::back.pages.form', [
                 'item' => $item,
                 'categories' => $categories,
             ]);
@@ -111,7 +114,7 @@ class PagesController extends Controller
      * @param null $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(SavePageRequest $request, $id = null)
+    public function update(SavePageRequest $request, $id = null): RedirectResponse
     {
         return $this->save($request, $id);
     }
@@ -123,7 +126,7 @@ class PagesController extends Controller
      * @param null $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    private function save($request, $id = null)
+    private function save($request, $id = null): RedirectResponse
     {
         if (! is_null($id) && $id > 0 && $item = PageModel::find($id)) {
             $action = 'отредактирована';
@@ -150,7 +153,7 @@ class PagesController extends Controller
 
         Session::flash('success', 'Страница «'.$item->title.'» успешно '.$action);
 
-        return redirect()->to(route('back.pages.edit', $item->fresh()->id));
+        return response()->redirectToRoute('back.pages.edit', [$item->fresh()->id]);
     }
 
     /**
@@ -159,7 +162,7 @@ class PagesController extends Controller
      * @param null $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id = null)
+    public function destroy($id = null): JsonResponse
     {
         if (! is_null($id) && $id > 0 && $item = PageModel::find($id)) {
             $slug = $item->slug;
@@ -184,7 +187,7 @@ class PagesController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getSlug(Request $request)
+    public function getSlug(Request $request): JsonResponse
     {
         $name = $request->get('name');
         $slug = SlugService::createSlug(PageModel::class, 'slug', $name);
