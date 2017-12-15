@@ -10,12 +10,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use InetStudio\Pages\Models\PageModel;
 use Illuminate\Support\Facades\Session;
+use InetStudio\Pages\Events\ModifyPageEvent;
 use InetStudio\Categories\Models\CategoryModel;
 use InetStudio\Pages\Transformers\PageTransformer;
-use InetStudio\Tags\Traits\TagsManipulationsTrait;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use InetStudio\Pages\Http\Requests\Back\SavePageRequest;
 use InetStudio\AdminPanel\Http\Controllers\Back\Traits\DatatablesTrait;
+use InetStudio\Tags\Http\Controllers\Back\Traits\TagsManipulationsTrait;
 use InetStudio\AdminPanel\Http\Controllers\Back\Traits\MetaManipulationsTrait;
 use InetStudio\AdminPanel\Http\Controllers\Back\Traits\ImagesManipulationsTrait;
 use InetStudio\Categories\Http\Controllers\Back\Traits\CategoriesManipulationsTrait;
@@ -149,7 +150,7 @@ class PagesController extends Controller
         // Обновление поискового индекса.
         $item->searchable();
 
-        \Event::fire('inetstudio.pages.cache.clear', $item->slug);
+        event(new ModifyPageEvent($item));
 
         Session::flash('success', 'Страница «'.$item->title.'» успешно '.$action);
 
@@ -165,11 +166,9 @@ class PagesController extends Controller
     public function destroy($id = null): JsonResponse
     {
         if (! is_null($id) && $id > 0 && $item = PageModel::find($id)) {
-            $slug = $item->slug;
+            event(new ModifyPageEvent($item));
 
             $item->delete();
-
-            \Event::fire('inetstudio.pages.cache.clear', $slug);
 
             return response()->json([
                 'success' => true,
