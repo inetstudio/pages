@@ -228,7 +228,7 @@
         {!! Form::close()!!}
     </div>
 
-    @include('admin.module.polls::pages.modals.form')
+    @include('admin.module.polls::back.pages.modals.form')
 
 @endsection
 
