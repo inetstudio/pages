@@ -16,8 +16,8 @@ use InetStudio\Pages\Transformers\PageTransformer;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use InetStudio\Pages\Http\Requests\Back\SavePageRequest;
 use InetStudio\AdminPanel\Http\Controllers\Back\Traits\DatatablesTrait;
+use InetStudio\Meta\Http\Controllers\Back\Traits\MetaManipulationsTrait;
 use InetStudio\Tags\Http\Controllers\Back\Traits\TagsManipulationsTrait;
-use InetStudio\AdminPanel\Http\Controllers\Back\Traits\MetaManipulationsTrait;
 use InetStudio\AdminPanel\Http\Controllers\Back\Traits\ImagesManipulationsTrait;
 use InetStudio\Categories\Http\Controllers\Back\Traits\CategoriesManipulationsTrait;
 
@@ -39,6 +39,7 @@ class PagesController extends Controller
      *
      * @param DataTables $dataTable
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Exception
      */
     public function index(DataTables $dataTable): View
     {
@@ -48,9 +49,10 @@ class PagesController extends Controller
     }
 
     /**
-     * Datatables serverside.
+     * DataTables ServerSide.
      *
      * @return mixed
+     * @throws \Exception
      */
     public function data()
     {
@@ -154,7 +156,9 @@ class PagesController extends Controller
 
         Session::flash('success', 'Страница «'.$item->title.'» успешно '.$action);
 
-        return response()->redirectToRoute('back.pages.edit', [$item->fresh()->id]);
+        return response()->redirectToRoute('back.pages.edit', [
+            $item->fresh()->id,
+        ]);
     }
 
     /**

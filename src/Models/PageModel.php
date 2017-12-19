@@ -6,15 +6,17 @@ use Spatie\Tags\HasTags;
 use Cocur\Slugify\Slugify;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\Media;
-use Phoenix\EloquentMeta\MetaTrait;
 use InetStudio\Tags\Models\TagModel;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
+use InetStudio\Meta\Models\Traits\Metable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\Image\Exceptions\InvalidManipulation;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use InetStudio\Categories\Models\Traits\HasCategories;
+use InetStudio\Meta\Contracts\Models\Traits\MetableContract;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
 
@@ -58,10 +60,10 @@ use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
  * @method static \Illuminate\Database\Query\Builder|\InetStudio\Pages\Models\PageModel withoutTrashed()
  * @mixin \Eloquent
  */
-class PageModel extends Model implements HasMediaConversions
+class PageModel extends Model implements MetableContract, HasMediaConversions
 {
     use HasTags;
-    use MetaTrait;
+    use Metable;
     use Sluggable;
     use Searchable;
     use SoftDeletes;
@@ -181,6 +183,7 @@ class PageModel extends Model implements HasMediaConversions
      * Регистрируем преобразования изображений.
      *
      * @param Media|null $media
+     * @throws InvalidManipulation
      */
     public function registerMediaConversions(Media $media = null)
     {
