@@ -193,7 +193,7 @@ class PagesController extends Controller
     public function getSlug(Request $request): JsonResponse
     {
         $name = $request->get('name');
-        $slug = SlugService::createSlug(PageModel::class, 'slug', $name);
+        $slug = ($name) ? SlugService::createSlug(PageModel::class, 'slug', $name) : '';
 
         return response()->json($slug);
     }
