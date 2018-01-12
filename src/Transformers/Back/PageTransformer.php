@@ -1,6 +1,6 @@
 <?php
 
-namespace Inetstudio\Pages\Transformers;
+namespace Inetstudio\Pages\Transformers\Back;
 
 use InetStudio\Pages\Models\PageModel;
 use League\Fractal\TransformerAbstract;
@@ -11,7 +11,10 @@ class PageTransformer extends TransformerAbstract
      * Подготовка данных для отображения в таблице.
      *
      * @param PageModel $page
+     *
      * @return array
+     *
+     * @throws \Throwable
      */
     public function transform(PageModel $page): array
     {

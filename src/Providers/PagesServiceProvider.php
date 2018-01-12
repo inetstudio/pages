@@ -4,12 +4,17 @@ namespace InetStudio\Pages\Providers;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
-use InetStudio\Pages\Services\PagesService;
 use InetStudio\Pages\Events\ModifyPageEvent;
+use InetStudio\Pages\Services\Front\PagesService;
 use InetStudio\Pages\Console\Commands\SetupCommand;
 use InetStudio\Pages\Listeners\ClearPagesCacheListener;
 use InetStudio\Pages\Console\Commands\CreateFoldersCommand;
+use InetStudio\Pages\Contracts\Services\PagesServiceContract;
 
+/**
+ * Class PagesServiceProvider
+ * @package InetStudio\Pages\Providers
+ */
 class PagesServiceProvider extends ServiceProvider
 {
     /**
@@ -113,6 +118,6 @@ class PagesServiceProvider extends ServiceProvider
      */
     public function registerBindings(): void
     {
-        $this->app->bind('PagesService', PagesService::class);
+        $this->app->bind(PagesServiceContract::class, PagesService::class);
     }
 }
