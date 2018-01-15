@@ -6,11 +6,6 @@
 
 @section('title', $title)
 
-@pushonce('styles:jstree')
-    <!-- JSTREE -->
-    <link href="{!! asset('admin/css/plugins/jstree/style.min.css') !!}" rel="stylesheet">
-@endpushonce
-
 @section('content')
 
     @push('breadcrumbs')
@@ -175,46 +170,9 @@
                                         ],
                                     ]) !!}
 
-                                    <div class="form-group ">
-                                        <label for="title" class="col-sm-2 control-label">Категории</label>
+                                    {!! Form::categories('', $item) !!}
 
-                                        <div class="col-sm-10">
-                                            @if (count($categories) > 0)
-                                                <div class="jstree-list" data-target="categories" data-multiple="true" data-cascade="up">
-                                                    <ul>
-                                                        @foreach ($categories as $category)
-                                                            @include('admin.module.categories::back.partials.tree.form_category', [
-                                                                'id' => 'parentCategoryId',
-                                                                'item' => $category,
-                                                                'currentId' => null,
-                                                                'selected' => $item->categories()->pluck('id')->toArray(),
-                                                            ])
-                                                        @endforeach
-                                                    </ul>
-                                                </div>
-                                            @else
-                                                <p>Список категорий пуст.</p>
-                                            @endif
-
-                                            {!! Form::hidden('categories', '') !!}
-
-                                        </div>
-                                    </div>
-                                    <div class="hr-line-dashed"></div>
-
-                                    {!! Form::dropdown('tags[]', $item->tags()->pluck('id')->toArray(), [
-                                        'label' => [
-                                            'title' => 'Теги',
-                                        ],
-                                        'field' => [
-                                            'class' => 'select2 form-control',
-                                            'data-placeholder' => 'Выберите теги',
-                                            'style' => 'width: 100%',
-                                            'multiple' => 'multiple',
-                                            'data-source' => route('back.tags.getSuggestions'),
-                                        ],
-                                        'options' => (old('tags')) ? \InetStudio\Tags\Models\TagModel::whereIn('id', old('tags'))->pluck('name', 'id')->toArray() : $item->tags()->pluck('name', 'id')->toArray(),
-                                    ]) !!}
+                                    {!! Form::tags('', $item) !!}
 
                                 </div>
                             </div>
@@ -231,8 +189,3 @@
     @include('admin.module.polls::back.pages.modals.form')
 
 @endsection
-
-@pushonce('scripts:jstree')
-    <!-- JSTREE -->
-    <script src="{!! asset('admin/js/plugins/jstree/jstree.min.js') !!}"></script>
-@endpushonce
