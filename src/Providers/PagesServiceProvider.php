@@ -3,6 +3,7 @@
 namespace InetStudio\Pages\Providers;
 
 use Illuminate\Support\Facades\Event;
+use InetStudio\Pages\Models\PageModel;
 use Illuminate\Support\ServiceProvider;
 use InetStudio\Pages\Events\ModifyPageEvent;
 use InetStudio\Pages\Services\Front\PagesService;
@@ -29,6 +30,7 @@ class PagesServiceProvider extends ServiceProvider
         $this->registerRoutes();
         $this->registerViews();
         $this->registerEvents();
+        $this->registerViewComposers();
     }
 
     /**
@@ -109,6 +111,20 @@ class PagesServiceProvider extends ServiceProvider
     protected function registerEvents(): void
     {
         Event::listen(ModifyPageEvent::class, ClearPagesCacheListener::class);
+    }
+
+    /**
+     * Register Page's view composers.
+     *
+     * @return void
+     */
+    public function registerViewComposers(): void
+    {
+        view()->composer('admin.module.pages::back.partials.analytics.materials.statistic', function ($view) {
+            $pagesCount = PageModel::count();
+
+            $view->with('count', $pagesCount);
+        });
     }
 
     /**
