@@ -1,6 +1,6 @@
 <?php
 
-namespace Inetstudio\Pages\Transformers\Back;
+namespace InetStudio\Pages\Transformers\Back;
 
 use InetStudio\Pages\Models\PageModel;
 use League\Fractal\TransformerAbstract;
