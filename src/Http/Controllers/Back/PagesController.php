@@ -146,7 +146,9 @@ class PagesController extends Controller
         $this->saveMeta($item, $request);
         $this->saveCategories($item, $request);
         $this->saveTags($item, $request);
-        $this->saveImages($item, $request, ['og_image', 'preview', 'content'], 'pages');
+
+        $images = (config('pages.images.conversions')) ? array_keys(config('pages.images.conversions')) : [];
+        $this->saveImages($item, $request, $images, 'pages');
 
         // Обновление поискового индекса.
         $item->searchable();
