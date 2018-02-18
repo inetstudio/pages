@@ -23,6 +23,6 @@ class ClearPagesCacheListener
     {
         $object = $event->object;
 
-        Cache::tags(['pages'])->forget('PagesService_getPageBySlug_'.md5($object->slug));
+        Cache::forget('PagesService_getPageBySlug_'.md5($object->slug));
     }
 }

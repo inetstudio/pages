@@ -25,7 +25,7 @@ class PagesService implements PagesServiceContract
     {
         $cacheKey = 'PagesService_getPageBySlug_'.md5($slug);
 
-        return \Cache::tags(['pages'])->remember($cacheKey, 1440, function() use ($slug) {
+        return \Cache::remember($cacheKey, 1440, function() use ($slug) {
             $items = PageModel::select(['id', 'title', 'content', 'slug'])
                 ->with(['meta' => function ($query) {
                     $query->select(['metable_id', 'metable_type', 'key', 'value']);
