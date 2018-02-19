@@ -20,9 +20,8 @@ use InetStudio\Meta\Contracts\Models\Traits\MetableContract;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
 
-
 /**
- * InetStudio\Pages\Models\PageModel
+ * InetStudio\Pages\Models\PageModel.
  *
  * @property int $id
  * @property string $title

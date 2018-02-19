@@ -7,5 +7,4 @@ namespace InetStudio\Pages\Contracts\Transformers\Front;
  */
 interface PagesSiteMapTransformerContract
 {
-
 }

@@ -7,5 +7,4 @@ namespace InetStudio\Pages\Contracts\Events;
  */
 interface ModifyPageEventContract
 {
-
 }
