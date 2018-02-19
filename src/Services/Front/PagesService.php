@@ -6,7 +6,6 @@ use League\Fractal\Manager;
 use InetStudio\Pages\Models\PageModel;
 use League\Fractal\Serializer\DataArraySerializer;
 use InetStudio\Pages\Contracts\Services\Front\PagesServiceContract;
-use InetStudio\Pages\Contracts\Transformers\Front\PagesSiteMapTransformerContract;
 
 /**
  * Class PagesService.
@@ -80,7 +79,7 @@ class PagesService implements PagesServiceContract
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $resource = (app()->make(PagesSiteMapTransformerContract::class))->transformCollection($pages);
+        $resource = (app()->make('InetStudio\Pages\Contracts\Transformers\Front\PagesSiteMapTransformerContract'))->transformCollection($pages);
 
         $manager = new Manager();
         $manager->setSerializer(new DataArraySerializer());

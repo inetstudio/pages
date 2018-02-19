@@ -9,7 +9,6 @@ use Illuminate\Http\RedirectResponse;
 use InetStudio\Pages\Models\PageModel;
 use Illuminate\Support\Facades\Session;
 use InetStudio\Categories\Models\CategoryModel;
-use InetStudio\Pages\Contracts\Events\ModifyPageEventContract;
 use InetStudio\Meta\Http\Controllers\Back\Traits\MetaManipulationsTrait;
 use InetStudio\Tags\Http\Controllers\Back\Traits\TagsManipulationsTrait;
 use InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract;
@@ -136,7 +135,7 @@ class PagesController extends Controller implements PagesControllerContract
         // Обновление поискового индекса.
         $item->searchable();
 
-        event(app()->makeWith(ModifyPageEventContract::class, ['item' => $item]));
+        event(app()->makeWith('InetStudio\Pages\Contracts\Events\ModifyPageEventContract', ['object' => $item]));
 
         Session::flash('success', 'Страница «'.$item->title.'» успешно '.$action);
 
@@ -155,7 +154,7 @@ class PagesController extends Controller implements PagesControllerContract
     public function destroy($id = null): JsonResponse
     {
         if (! is_null($id) && $id > 0 && $item = PageModel::find($id)) {
-            event(app()->makeWith(ModifyPageEventContract::class, ['item' => $item]));
+            event(app()->makeWith('InetStudio\Pages\Contracts\Events\ModifyPageEventContract', ['object' => $item]));
 
             $item->delete();
 

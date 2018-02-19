@@ -4,26 +4,6 @@ namespace InetStudio\Pages\Providers;
 
 use InetStudio\Pages\Models\PageModel;
 use Illuminate\Support\ServiceProvider;
-use InetStudio\Pages\Events\ModifyPageEvent;
-use InetStudio\Pages\Services\Front\PagesService;
-use InetStudio\Pages\Console\Commands\SetupCommand;
-use InetStudio\Pages\Transformers\Back\PageTransformer;
-use InetStudio\Pages\Http\Requests\Back\SavePageRequest;
-use InetStudio\Pages\Services\Back\PagesDataTableService;
-use InetStudio\Pages\Console\Commands\CreateFoldersCommand;
-use InetStudio\Pages\Http\Controllers\Back\PagesController;
-use InetStudio\Pages\Contracts\Events\ModifyPageEventContract;
-use InetStudio\Pages\Http\Controllers\Back\PagesDataController;
-use InetStudio\Pages\Transformers\Front\PagesSiteMapTransformer;
-use InetStudio\Pages\Http\Controllers\Back\PagesUtilityController;
-use InetStudio\Pages\Contracts\Services\Front\PagesServiceContract;
-use InetStudio\Pages\Contracts\Transformers\Back\PageTransformerContract;
-use InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract;
-use InetStudio\Pages\Contracts\Services\Back\PagesDataTableServiceContract;
-use InetStudio\Pages\Contracts\Http\Controllers\Back\PagesControllerContract;
-use InetStudio\Pages\Contracts\Http\Controllers\Back\PagesDataControllerContract;
-use InetStudio\Pages\Contracts\Transformers\Front\PagesSiteMapTransformerContract;
-use InetStudio\Pages\Contracts\Http\Controllers\Back\PagesUtilityControllerContract;
 
 /**
  * Class PagesServiceProvider.
@@ -63,8 +43,8 @@ class PagesServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                SetupCommand::class,
-                CreateFoldersCommand::class,
+                'InetStudio\Pages\Console\Commands\SetupCommand',
+                'InetStudio\Pages\Console\Commands\CreateFoldersCommand',
             ]);
         }
     }
@@ -136,22 +116,22 @@ class PagesServiceProvider extends ServiceProvider
     public function registerBindings(): void
     {
         // Controllers
-        $this->app->bind(PagesControllerContract::class, PagesController::class);
-        $this->app->bind(PagesDataControllerContract::class, PagesDataController::class);
-        $this->app->bind(PagesUtilityControllerContract::class, PagesUtilityController::class);
+        $this->app->bind('InetStudio\Pages\Contracts\Http\Controllers\Back\PagesControllerContract', 'InetStudio\Pages\Http\Controllers\Back\PagesController');
+        $this->app->bind('InetStudio\Pages\Contracts\Http\Controllers\Back\PagesDataControllerContract', 'InetStudio\Pages\Http\Controllers\Back\PagesDataController');
+        $this->app->bind('InetStudio\Pages\Contracts\Http\Controllers\Back\PagesUtilityControllerContract', 'InetStudio\Pages\Http\Controllers\Back\PagesUtilityController');
 
         // Events
-        $this->app->bind(ModifyPageEventContract::class, ModifyPageEvent::class);
+        $this->app->bind('InetStudio\Pages\Contracts\Events\ModifyPageEventContract', 'InetStudio\Pages\Events\ModifyPageEvent');
 
         // Requests
-        $this->app->bind(SavePageRequestContract::class, SavePageRequest::class);
+        $this->app->bind('InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract', 'InetStudio\Pages\Http\Requests\Back\SavePageRequest');
 
         // Services
-        $this->app->bind(PagesServiceContract::class, PagesService::class);
-        $this->app->bind(PagesDataTableServiceContract::class, PagesDataTableService::class);
+        $this->app->bind('InetStudio\Pages\Contracts\Services\Front\PagesServiceContract', 'InetStudio\Pages\Services\Front\PagesService');
+        $this->app->bind('InetStudio\Pages\Contracts\Services\Back\PagesDataTableServiceContract', 'InetStudio\Pages\Services\Back\PagesDataTableService');
 
         // Transformers
-        $this->app->bind(PageTransformerContract::class, PageTransformer::class);
-        $this->app->bind(PagesSiteMapTransformerContract::class, PagesSiteMapTransformer::class);
+        $this->app->bind('InetStudio\Pages\Contracts\Transformers\Back\PageTransformerContract', 'InetStudio\Pages\Transformers\Back\PageTransformer');
+        $this->app->bind('InetStudio\Pages\Contracts\Transformers\Front\PagesSiteMapTransformerContract', 'InetStudio\Pages\Transformers\Front\PagesSiteMapTransformer');
     }
 }

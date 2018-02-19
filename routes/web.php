@@ -1,18 +1,15 @@
 <?php
 
-use InetStudio\Pages\Contracts\Http\Controllers\Back\PagesControllerContract;
-use InetStudio\Pages\Contracts\Http\Controllers\Back\PagesDataControllerContract;
-use InetStudio\Pages\Contracts\Http\Controllers\Back\PagesUtilityControllerContract;
-
 Route::group([
+    'namespace' => 'InetStudio\Pages\Contracts\Http\Controllers\Back',
     'middleware' => ['web', 'back.auth'],
-    'prefix' => 'back'
+    'prefix' => 'back',
 ], function () {
-    Route::any('pages/data', PagesDataControllerContract::class.'@data')->name('back.pages.data.index');
-    Route::post('pages/slug', PagesUtilityControllerContract::class.'@getSlug')->name('back.pages.getSlug');
-    Route::post('pages/suggestions', PagesUtilityControllerContract::class.'@getSuggestions')->name('back.pages.getSuggestions');
+    Route::any('pages/data', 'PagesDataControllerContract@data')->name('back.pages.data.index');
+    Route::post('pages/slug', 'PagesUtilityControllerContract@getSlug')->name('back.pages.getSlug');
+    Route::post('pages/suggestions', 'PagesUtilityControllerContract@getSuggestions')->name('back.pages.getSuggestions');
 
-    Route::resource('pages', PagesControllerContract::class, ['except' => [
+    Route::resource('pages', 'PagesControllerContract', ['except' => [
         'show',
     ], 'as' => 'back']);
 });

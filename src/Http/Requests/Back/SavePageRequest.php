@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
 use InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract;
 
+/**
+ * Class SavePageRequest.
+ */
 class SavePageRequest extends FormRequest implements SavePageRequestContract
 {
     /**

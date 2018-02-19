@@ -6,7 +6,6 @@ use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Html\Builder;
 use InetStudio\Pages\Models\PageModel;
 use Yajra\DataTables\Services\DataTable;
-use InetStudio\Pages\Contracts\Transformers\Back\PageTransformerContract;
 use InetStudio\Pages\Contracts\Services\Back\PagesDataTableServiceContract;
 
 class PagesDataTableService extends DataTable implements PagesDataTableServiceContract
@@ -20,7 +19,7 @@ class PagesDataTableService extends DataTable implements PagesDataTableServiceCo
      */
     public function ajax()
     {
-        $transformer = app()->make(PageTransformerContract::class);
+        $transformer = app()->make('InetStudio\Pages\Contracts\Transformers\Back\PageTransformerContract');
 
         return DataTables::of($this->query())
             ->setTransformer($transformer)
