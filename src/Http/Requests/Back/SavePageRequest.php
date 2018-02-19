@@ -4,8 +4,9 @@ namespace InetStudio\Pages\Http\Requests\Back;
 
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
+use InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract;
 
-class SavePageRequest extends FormRequest
+class SavePageRequest extends FormRequest implements SavePageRequestContract
 {
     /**
      * Определить, авторизован ли пользователь для этого запроса.

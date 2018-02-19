@@ -5,12 +5,12 @@ namespace InetStudio\Pages\Transformers\Front;
 use InetStudio\Pages\Models\PageModel;
 use League\Fractal\TransformerAbstract;
 use League\Fractal\Resource\Collection as FractalCollection;
+use InetStudio\Pages\Contracts\Transformers\Front\PagesSiteMapTransformerContract;
 
 /**
- * Class PagesSiteMapTransformer
- * @package InetStudio\Pages\Transformers\Front
+ * Class PagesSiteMapTransformer.
  */
-class PagesSiteMapTransformer extends TransformerAbstract
+class PagesSiteMapTransformer extends TransformerAbstract implements PagesSiteMapTransformerContract
 {
     /**
      * Подготовка данных для отображения в карте сайта.

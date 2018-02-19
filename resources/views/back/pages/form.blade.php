@@ -9,10 +9,7 @@
 @section('content')
 
     @push('breadcrumbs')
-        @include('admin.module.pages::back.partials.breadcrumbs')
-        <li>
-            <a href="{{ route('back.pages.index') }}">Страницы</a>
-        </li>
+        @include('admin.module.pages::back.partials.breadcrumbs.form')
     @endpush
 
     <div class="row m-sm">
@@ -29,13 +26,13 @@
     <div class="wrapper wrapper-content">
         {!! Form::info() !!}
 
-        {!! Form::open(['url' => (!$item->id) ? route('back.pages.store') : route('back.pages.update', [$item->id]), 'id' => 'mainForm', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal']) !!}
+        {!! Form::open(['url' => (! $item->id) ? route('back.pages.store') : route('back.pages.update', [$item->id]), 'id' => 'mainForm', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal']) !!}
 
             @if ($item->id)
                 {{ method_field('PUT') }}
             @endif
 
-            {!! Form::hidden('page_id', (!$item->id) ? '' : $item->id) !!}
+            {!! Form::hidden('page_id', (! $item->id) ? '' : $item->id) !!}
 
             {!! Form::meta('', $item) !!}
 

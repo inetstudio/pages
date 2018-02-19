@@ -4,6 +4,9 @@ namespace InetStudio\Pages\Console\Commands;
 
 use Illuminate\Console\Command;
 
+/**
+ * Class CreateFoldersCommand.
+ */
 class CreateFoldersCommand extends Command
 {
     /**

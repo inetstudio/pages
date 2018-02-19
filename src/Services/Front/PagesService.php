@@ -5,12 +5,11 @@ namespace InetStudio\Pages\Services\Front;
 use League\Fractal\Manager;
 use InetStudio\Pages\Models\PageModel;
 use League\Fractal\Serializer\DataArraySerializer;
-use InetStudio\Pages\Contracts\Services\PagesServiceContract;
-use InetStudio\Pages\Transformers\Front\PagesSiteMapTransformer;
+use InetStudio\Pages\Contracts\Services\Front\PagesServiceContract;
+use InetStudio\Pages\Contracts\Transformers\Front\PagesSiteMapTransformerContract;
 
 /**
- * Class PagesService
- * @package InetStudio\Pages\Services\Front
+ * Class PagesService.
  */
 class PagesService implements PagesServiceContract
 {
@@ -18,30 +17,56 @@ class PagesService implements PagesServiceContract
      * Получаем страницу по slug.
      *
      * @param string $slug
+     * @param bool $returnBuilder
      *
-     * @return PageModel
+     * @return mixed
      */
-    public function getPageBySlug(string $slug): PageModel
+    public static function getPageBySlug(string $slug, bool $returnBuilder = false)
     {
-        $cacheKey = 'PagesService_getPageBySlug_'.md5($slug);
-
-        //return \Cache::tags(['pages'])->remember($cacheKey, 1440, function() use ($slug) {
-        return \Cache::remember($cacheKey, 1440, function() use ($slug) {
-            $items = PageModel::select(['id', 'title', 'content', 'slug'])
+        $builder = PageModel::select(['id', 'title', 'content', 'slug'])
                 ->with(['meta' => function ($query) {
                     $query->select(['metable_id', 'metable_type', 'key', 'value']);
                 }, 'media' => function ($query) {
                     $query->select(['id', 'model_id', 'model_type', 'collection_name', 'file_name', 'disk']);
                 }])
-                ->whereSlug($slug)
-                ->get();
+                ->whereSlug($slug);
 
-            if ($items->count() == 0) {
-                abort(404);
-            }
+        if ($returnBuilder) {
+            return $builder;
+        }
 
-            return $items->first();
-        });
+        $page = $builder->first();
+
+        if (! $page) {
+            abort(404);
+        }
+
+        return $page;
+    }
+
+    /**
+     * Получаем страницы по категории.
+     *
+     * @param $slug
+     * @param bool $returnBuilder
+     *
+     * @return mixed
+     */
+    public static function getPagesByCategory($slug, bool $returnBuilder = false)
+    {
+        $builder = PageModel::select(['id', 'title', 'description', 'slug'])
+            ->with(['meta' => function ($query) {
+                $query->select(['metable_id', 'metable_type', 'key', 'value']);
+            }, 'media' => function ($query) {
+                $query->select(['id', 'model_id', 'model_type', 'collection_name', 'file_name', 'disk']);
+            }])
+            ->withCategories($slug);
+
+        if ($returnBuilder) {
+            return $builder;
+        }
+
+        return $builder->get();
     }
 
     /**
@@ -55,20 +80,8 @@ class PagesService implements PagesServiceContract
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $resource = (new PagesSiteMapTransformer())->transformCollection($pages);
+        $resource = (app()->make(PagesSiteMapTransformerContract::class))->transformCollection($pages);
 
-        return $this->serializeToArray($resource);
-    }
-
-    /**
-     * Преобразовываем данные в массив.
-     *
-     * @param $resource
-     *
-     * @return array
-     */
-    private function serializeToArray($resource): array
-    {
         $manager = new Manager();
         $manager->setSerializer(new DataArraySerializer());
 

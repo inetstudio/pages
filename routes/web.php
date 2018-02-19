@@ -1,14 +1,18 @@
 <?php
 
-Route::group(['namespace' => 'InetStudio\Pages\Http\Controllers\Back'], function () {
-    Route::group(['middleware' => 'web', 'prefix' => 'back'], function () {
-        Route::group(['middleware' => 'back.auth'], function () {
-            Route::post('pages/slug', 'PagesController@getSlug')->name('back.pages.getSlug');
-            Route::any('pages/data', 'PagesController@data')->name('back.pages.data');
-            Route::post('pages/suggestions', 'PagesController@getSuggestions')->name('back.pages.getSuggestions');
-            Route::resource('pages', 'PagesController', ['except' => [
-                'show',
-            ], 'as' => 'back']);
-        });
-    });
+use InetStudio\Pages\Contracts\Http\Controllers\Back\PagesControllerContract;
+use InetStudio\Pages\Contracts\Http\Controllers\Back\PagesDataControllerContract;
+use InetStudio\Pages\Contracts\Http\Controllers\Back\PagesUtilityControllerContract;
+
+Route::group([
+    'middleware' => ['web', 'back.auth'],
+    'prefix' => 'back'
+], function () {
+    Route::any('pages/data', PagesDataControllerContract::class.'@data')->name('back.pages.data.index');
+    Route::post('pages/slug', PagesUtilityControllerContract::class.'@getSlug')->name('back.pages.getSlug');
+    Route::post('pages/suggestions', PagesUtilityControllerContract::class.'@getSuggestions')->name('back.pages.getSuggestions');
+
+    Route::resource('pages', PagesControllerContract::class, ['except' => [
+        'show',
+    ], 'as' => 'back']);
 });

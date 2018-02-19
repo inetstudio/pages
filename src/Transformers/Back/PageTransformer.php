@@ -4,8 +4,9 @@ namespace InetStudio\Pages\Transformers\Back;
 
 use InetStudio\Pages\Models\PageModel;
 use League\Fractal\TransformerAbstract;
+use InetStudio\Pages\Contracts\Transformers\Back\PageTransformerContract;
 
-class PageTransformer extends TransformerAbstract
+class PageTransformer extends TransformerAbstract implements PageTransformerContract
 {
     /**
      * Подготовка данных для отображения в таблице.

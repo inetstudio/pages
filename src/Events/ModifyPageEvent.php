@@ -3,8 +3,12 @@
 namespace InetStudio\Pages\Events;
 
 use Illuminate\Queue\SerializesModels;
+use InetStudio\Pages\Contracts\Events\ModifyPageEventContract;
 
-class ModifyPageEvent
+/**
+ * Class ModifyPageEvent.
+ */
+class ModifyPageEvent implements ModifyPageEventContract
 {
     use SerializesModels;
 
@@ -13,7 +17,7 @@ class ModifyPageEvent
     /**
      * Create a new event instance.
      *
-     * ModifyArticleEvent constructor.
+     * ModifyPageEvent constructor.
      * @param $object
      */
     public function __construct($object)

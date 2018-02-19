@@ -2,19 +2,31 @@
 
 namespace InetStudio\Pages\Providers;
 
-use Illuminate\Support\Facades\Event;
 use InetStudio\Pages\Models\PageModel;
 use Illuminate\Support\ServiceProvider;
 use InetStudio\Pages\Events\ModifyPageEvent;
 use InetStudio\Pages\Services\Front\PagesService;
 use InetStudio\Pages\Console\Commands\SetupCommand;
-use InetStudio\Pages\Listeners\ClearPagesCacheListener;
+use InetStudio\Pages\Transformers\Back\PageTransformer;
+use InetStudio\Pages\Http\Requests\Back\SavePageRequest;
+use InetStudio\Pages\Services\Back\PagesDataTableService;
 use InetStudio\Pages\Console\Commands\CreateFoldersCommand;
-use InetStudio\Pages\Contracts\Services\PagesServiceContract;
+use InetStudio\Pages\Http\Controllers\Back\PagesController;
+use InetStudio\Pages\Contracts\Events\ModifyPageEventContract;
+use InetStudio\Pages\Http\Controllers\Back\PagesDataController;
+use InetStudio\Pages\Transformers\Front\PagesSiteMapTransformer;
+use InetStudio\Pages\Http\Controllers\Back\PagesUtilityController;
+use InetStudio\Pages\Contracts\Services\Front\PagesServiceContract;
+use InetStudio\Pages\Contracts\Transformers\Back\PageTransformerContract;
+use InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract;
+use InetStudio\Pages\Contracts\Services\Back\PagesDataTableServiceContract;
+use InetStudio\Pages\Contracts\Http\Controllers\Back\PagesControllerContract;
+use InetStudio\Pages\Contracts\Http\Controllers\Back\PagesDataControllerContract;
+use InetStudio\Pages\Contracts\Transformers\Front\PagesSiteMapTransformerContract;
+use InetStudio\Pages\Contracts\Http\Controllers\Back\PagesUtilityControllerContract;
 
 /**
- * Class PagesServiceProvider
- * @package InetStudio\Pages\Providers
+ * Class PagesServiceProvider.
  */
 class PagesServiceProvider extends ServiceProvider
 {
@@ -29,7 +41,6 @@ class PagesServiceProvider extends ServiceProvider
         $this->registerPublishes();
         $this->registerRoutes();
         $this->registerViews();
-        $this->registerEvents();
         $this->registerViewComposers();
     }
 
@@ -104,16 +115,6 @@ class PagesServiceProvider extends ServiceProvider
     }
 
     /**
-     * Регистрация событий.
-     *
-     * @return void
-     */
-    protected function registerEvents(): void
-    {
-        Event::listen(ModifyPageEvent::class, ClearPagesCacheListener::class);
-    }
-
-    /**
      * Register Page's view composers.
      *
      * @return void
@@ -134,6 +135,23 @@ class PagesServiceProvider extends ServiceProvider
      */
     public function registerBindings(): void
     {
+        // Controllers
+        $this->app->bind(PagesControllerContract::class, PagesController::class);
+        $this->app->bind(PagesDataControllerContract::class, PagesDataController::class);
+        $this->app->bind(PagesUtilityControllerContract::class, PagesUtilityController::class);
+
+        // Events
+        $this->app->bind(ModifyPageEventContract::class, ModifyPageEvent::class);
+
+        // Requests
+        $this->app->bind(SavePageRequestContract::class, SavePageRequest::class);
+
+        // Services
         $this->app->bind(PagesServiceContract::class, PagesService::class);
+        $this->app->bind(PagesDataTableServiceContract::class, PagesDataTableService::class);
+
+        // Transformers
+        $this->app->bind(PageTransformerContract::class, PageTransformer::class);
+        $this->app->bind(PagesSiteMapTransformerContract::class, PagesSiteMapTransformer::class);
     }
 }

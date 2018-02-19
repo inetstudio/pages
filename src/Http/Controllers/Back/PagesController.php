@@ -3,32 +3,26 @@
 namespace InetStudio\Pages\Http\Controllers\Back;
 
 use Illuminate\View\View;
-use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use InetStudio\Pages\Models\PageModel;
 use Illuminate\Support\Facades\Session;
-use InetStudio\Pages\Events\ModifyPageEvent;
 use InetStudio\Categories\Models\CategoryModel;
-use Cviebrock\EloquentSluggable\Services\SlugService;
-use InetStudio\Pages\Transformers\Back\PageTransformer;
-use InetStudio\Pages\Http\Requests\Back\SavePageRequest;
-use InetStudio\AdminPanel\Http\Controllers\Back\Traits\DatatablesTrait;
+use InetStudio\Pages\Contracts\Events\ModifyPageEventContract;
 use InetStudio\Meta\Http\Controllers\Back\Traits\MetaManipulationsTrait;
 use InetStudio\Tags\Http\Controllers\Back\Traits\TagsManipulationsTrait;
+use InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract;
+use InetStudio\Pages\Contracts\Services\Back\PagesDataTableServiceContract;
+use InetStudio\Pages\Contracts\Http\Controllers\Back\PagesControllerContract;
 use InetStudio\AdminPanel\Http\Controllers\Back\Traits\ImagesManipulationsTrait;
 use InetStudio\Categories\Http\Controllers\Back\Traits\CategoriesManipulationsTrait;
 
 /**
- * Контроллер для управления страницами.
- *
- * Class ContestByTagStatusesController
+ * Class PagesController.
  */
-class PagesController extends Controller
+class PagesController extends Controller implements PagesControllerContract
 {
-    use DatatablesTrait;
     use MetaManipulationsTrait;
     use TagsManipulationsTrait;
     use ImagesManipulationsTrait;
@@ -37,30 +31,15 @@ class PagesController extends Controller
     /**
      * Список страниц.
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @throws \Exception
+     * @param PagesDataTableServiceContract $dataTableService
+     *
+     * @return View
      */
-    public function index(): View
+    public function index(PagesDataTableServiceContract $dataTableService): View
     {
-        $table = $this->generateTable('pages', 'index');
+        $table = $dataTableService->html();
 
         return view('admin.module.pages::back.pages.index', compact('table'));
-    }
-
-    /**
-     * DataTables ServerSide.
-     *
-     * @return mixed
-     * @throws \Exception
-     */
-    public function data()
-    {
-        $items = PageModel::query();
-
-        return DataTables::of($items)
-            ->setTransformer(new PageTransformer)
-            ->rawColumns(['actions'])
-            ->make();
     }
 
     /**
@@ -81,10 +60,11 @@ class PagesController extends Controller
     /**
      * Создание страницы.
      *
-     * @param SavePageRequest $request
+     * @param SavePageRequestContract $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(SavePageRequest $request): RedirectResponse
+    public function store(SavePageRequestContract $request): RedirectResponse
     {
         return $this->save($request);
     }
@@ -93,6 +73,7 @@ class PagesController extends Controller
      * Редактирование страницы.
      *
      * @param null $id
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function edit($id = null): View
@@ -112,11 +93,12 @@ class PagesController extends Controller
     /**
      * Обновление страницы.
      *
-     * @param SavePageRequest $request
+     * @param SavePageRequestContract $request
      * @param null $id
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(SavePageRequest $request, $id = null): RedirectResponse
+    public function update(SavePageRequestContract $request, $id = null): RedirectResponse
     {
         return $this->save($request, $id);
     }
@@ -124,8 +106,9 @@ class PagesController extends Controller
     /**
      * Сохранение страницы.
      *
-     * @param SavePageRequest $request
+     * @param SavePageRequestContract $request
      * @param null $id
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     private function save($request, $id = null): RedirectResponse
@@ -153,7 +136,7 @@ class PagesController extends Controller
         // Обновление поискового индекса.
         $item->searchable();
 
-        event(new ModifyPageEvent($item));
+        event(app()->makeWith(ModifyPageEventContract::class, ['item' => $item]));
 
         Session::flash('success', 'Страница «'.$item->title.'» успешно '.$action);
 
@@ -166,12 +149,13 @@ class PagesController extends Controller
      * Удаление страницы.
      *
      * @param null $id
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id = null): JsonResponse
     {
         if (! is_null($id) && $id > 0 && $item = PageModel::find($id)) {
-            event(new ModifyPageEvent($item));
+            event(app()->makeWith(ModifyPageEventContract::class, ['item' => $item]));
 
             $item->delete();
 
@@ -183,62 +167,5 @@ class PagesController extends Controller
                 'success' => false,
             ]);
         }
-    }
-
-    /**
-     * Получаем slug для модели по строке.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getSlug(Request $request): JsonResponse
-    {
-        $name = $request->get('name');
-        $slug = ($name) ? SlugService::createSlug(PageModel::class, 'slug', $name) : '';
-
-        return response()->json($slug);
-    }
-
-    /**
-     * Возвращаем страницы для поля.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getSuggestions(Request $request): JsonResponse
-    {
-        $search = $request->get('q');
-
-        $items = PageModel::select(['id', 'title', 'slug'])->where('title', 'LIKE', '%'.$search.'%')->get();
-
-        if ($request->filled('type') && $request->get('type') == 'autocomplete') {
-            $type = get_class(new PageModel());
-
-            $data = $items->mapToGroups(function ($item) use ($type) {
-                return [
-                    'suggestions' => [
-                        'value' => $item->title,
-                        'data' => [
-                            'id' => $item->id,
-                            'type' => $type,
-                            'title' => $item->title,
-                            'path' => parse_url($item->href, PHP_URL_PATH),
-                            'href' => $item->href,
-                        ],
-                    ],
-                ];
-            });
-        } else {
-            $data = $items->mapToGroups(function ($item) {
-                return [
-                    'items' => [
-                        'id' => $item->id,
-                        'name' => $item->title,
-                    ],
-                ];
-            });
-        }
-
-        return response()->json($data);
     }
 }
