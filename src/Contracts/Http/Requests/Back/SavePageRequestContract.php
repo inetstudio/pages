@@ -7,5 +7,4 @@ namespace InetStudio\Pages\Contracts\Http\Requests\Back;
  */
 interface SavePageRequestContract
 {
-
 }
