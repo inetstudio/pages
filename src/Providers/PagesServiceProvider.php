@@ -121,14 +121,27 @@ class PagesServiceProvider extends ServiceProvider
         $this->app->bind('InetStudio\Pages\Contracts\Http\Controllers\Back\PagesUtilityControllerContract', 'InetStudio\Pages\Http\Controllers\Back\PagesUtilityController');
 
         // Events
-        $this->app->bind('InetStudio\Pages\Contracts\Events\ModifyPageEventContract', 'InetStudio\Pages\Events\ModifyPageEvent');
+        $this->app->bind('InetStudio\Pages\Contracts\Events\Back\ModifyPageEventContract', 'InetStudio\Pages\Events\Back\ModifyPageEvent');
+
+        // Models
+        $this->app->bind('InetStudio\Pages\Contracts\Models\PageModelContract', 'InetStudio\Pages\Models\PageModel');
+
+        // Repositories
+        $this->app->bind('InetStudio\Pages\Contracts\Repositories\Back\PagesRepositoryContract', 'InetStudio\Pages\Repositories\Back\PagesRepository');
 
         // Requests
         $this->app->bind('InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract', 'InetStudio\Pages\Http\Requests\Back\SavePageRequest');
 
+        // Responses
+        $this->app->bind('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\DestroyResponseContract', 'InetStudio\Pages\Http\Responses\Back\Pages\DestroyResponse');
+        $this->app->bind('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\FormResponseContract', 'InetStudio\Pages\Http\Responses\Back\Pages\FormResponse');
+        $this->app->bind('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\IndexResponseContract', 'InetStudio\Pages\Http\Responses\Back\Pages\IndexResponse');
+        $this->app->bind('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\SaveResponseContract', 'InetStudio\Pages\Http\Responses\Back\Pages\SaveResponse');
+
         // Services
-        $this->app->bind('InetStudio\Pages\Contracts\Services\Front\PagesServiceContract', 'InetStudio\Pages\Services\Front\PagesService');
+        $this->app->bind('InetStudio\Pages\Contracts\Services\Back\PagesServiceContract', 'InetStudio\Pages\Services\Back\PagesService');
         $this->app->bind('InetStudio\Pages\Contracts\Services\Back\PagesDataTableServiceContract', 'InetStudio\Pages\Services\Back\PagesDataTableService');
+        $this->app->bind('InetStudio\Pages\Contracts\Services\Front\PagesServiceContract', 'InetStudio\Pages\Services\Front\PagesService');
 
         // Transformers
         $this->app->bind('InetStudio\Pages\Contracts\Transformers\Back\PageTransformerContract', 'InetStudio\Pages\Transformers\Back\PageTransformer');

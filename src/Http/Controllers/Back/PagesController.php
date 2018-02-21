@@ -2,57 +2,62 @@
 
 namespace InetStudio\Pages\Http\Controllers\Back;
 
-use Illuminate\View\View;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
-use InetStudio\Pages\Models\PageModel;
-use Illuminate\Support\Facades\Session;
 use InetStudio\Categories\Models\CategoryModel;
-use InetStudio\Meta\Http\Controllers\Back\Traits\MetaManipulationsTrait;
-use InetStudio\Tags\Http\Controllers\Back\Traits\TagsManipulationsTrait;
 use InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract;
-use InetStudio\Pages\Contracts\Services\Back\PagesDataTableServiceContract;
 use InetStudio\Pages\Contracts\Http\Controllers\Back\PagesControllerContract;
-use InetStudio\AdminPanel\Http\Controllers\Back\Traits\ImagesManipulationsTrait;
-use InetStudio\Categories\Http\Controllers\Back\Traits\CategoriesManipulationsTrait;
+use InetStudio\Pages\Contracts\Http\Responses\Back\Pages\FormResponseContract;
+use InetStudio\Pages\Contracts\Http\Responses\Back\Pages\SaveResponseContract;
+use InetStudio\Pages\Contracts\Http\Responses\Back\Pages\IndexResponseContract;
+use InetStudio\Pages\Contracts\Http\Responses\Back\Pages\DestroyResponseContract;
 
 /**
  * Class PagesController.
  */
 class PagesController extends Controller implements PagesControllerContract
 {
-    use MetaManipulationsTrait;
-    use TagsManipulationsTrait;
-    use ImagesManipulationsTrait;
-    use CategoriesManipulationsTrait;
+    /**
+     * Используемые сервисы.
+     *
+     * @var array $services
+     */
+    private $services;
+
+    /**
+     * PagesController constructor.
+     */
+    public function __construct()
+    {
+        $this->services['pages'] = app()->make('InetStudio\Pages\Contracts\Services\Back\PagesServiceContract');
+        $this->services['dataTables'] = app()->make('InetStudio\Pages\Contracts\Services\Back\PagesDataTableServiceContract');
+    }
 
     /**
      * Список страниц.
      *
-     * @param PagesDataTableServiceContract $dataTableService
-     *
-     * @return View
+     * @return IndexResponseContract
      */
-    public function index(PagesDataTableServiceContract $dataTableService): View
+    public function index(): IndexResponseContract
     {
-        $table = $dataTableService->html();
+        $table = $this->services['dataTables']->html();
 
-        return view('admin.module.pages::back.pages.index', compact('table'));
+        return app()->makeWith('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\IndexResponseContract', [
+            'data' => compact('table'),
+        ]);
     }
 
     /**
      * Добавление страницы.
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return FormResponseContract
      */
-    public function create(): View
+    public function create(): FormResponseContract
     {
+        $item = $this->services['pages']->getPageObject();
         $categories = CategoryModel::getTree();
 
-        return view('admin.module.pages::back.pages.form', [
-            'item' => new PageModel(),
-            'categories' => $categories,
+        return app()->makeWith('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\FormResponseContract', [
+            'data' => compact('item', 'categories'),
         ]);
     }
 
@@ -61,9 +66,9 @@ class PagesController extends Controller implements PagesControllerContract
      *
      * @param SavePageRequestContract $request
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return SaveResponseContract
      */
-    public function store(SavePageRequestContract $request): RedirectResponse
+    public function store(SavePageRequestContract $request): SaveResponseContract
     {
         return $this->save($request);
     }
@@ -71,22 +76,18 @@ class PagesController extends Controller implements PagesControllerContract
     /**
      * Редактирование страницы.
      *
-     * @param null $id
+     * @param int $id
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return FormResponseContract
      */
-    public function edit($id = null): View
+    public function edit($id = 0): FormResponseContract
     {
-        if (! is_null($id) && $id > 0 && $item = PageModel::find($id)) {
-            $categories = CategoryModel::getTree();
+        $item = $this->services['pages']->getPageObject($id);
+        $categories = CategoryModel::getTree();
 
-            return view('admin.module.pages::back.pages.form', [
-                'item' => $item,
-                'categories' => $categories,
-            ]);
-        } else {
-            abort(404);
-        }
+        return app()->makeWith('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\FormResponseContract', [
+            'data' => compact('item', 'categories'),
+        ]);
     }
 
     /**
@@ -95,9 +96,9 @@ class PagesController extends Controller implements PagesControllerContract
      * @param SavePageRequestContract $request
      * @param null $id
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return SaveResponseContract
      */
-    public function update(SavePageRequestContract $request, $id = null): RedirectResponse
+    public function update(SavePageRequestContract $request, $id = null): SaveResponseContract
     {
         return $this->save($request, $id);
     }
@@ -108,39 +109,14 @@ class PagesController extends Controller implements PagesControllerContract
      * @param SavePageRequestContract $request
      * @param null $id
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return SaveResponseContract
      */
-    private function save($request, $id = null): RedirectResponse
+    private function save(SavePageRequestContract $request, $id = null): SaveResponseContract
     {
-        if (! is_null($id) && $id > 0 && $item = PageModel::find($id)) {
-            $action = 'отредактирована';
-        } else {
-            $action = 'создана';
-            $item = new PageModel();
-        }
+        $item = $this->services['pages']->save($request, $id);
 
-        $item->title = strip_tags($request->get('title'));
-        $item->slug = strip_tags($request->get('slug'));
-        $item->description = strip_tags($request->input('description.text'));
-        $item->content = $request->input('content.text');
-        $item->save();
-
-        $this->saveMeta($item, $request);
-        $this->saveCategories($item, $request);
-        $this->saveTags($item, $request);
-
-        $images = (config('pages.images.conversions')) ? array_keys(config('pages.images.conversions')) : [];
-        $this->saveImages($item, $request, $images, 'pages');
-
-        // Обновление поискового индекса.
-        $item->searchable();
-
-        event(app()->makeWith('InetStudio\Pages\Contracts\Events\ModifyPageEventContract', ['object' => $item]));
-
-        Session::flash('success', 'Страница «'.$item->title.'» успешно '.$action);
-
-        return response()->redirectToRoute('back.pages.edit', [
-            $item->fresh()->id,
+        return app()->makeWith('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\SaveResponseContract', [
+            'page' => $item,
         ]);
     }
 
@@ -149,22 +125,14 @@ class PagesController extends Controller implements PagesControllerContract
      *
      * @param null $id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return DestroyResponseContract
      */
-    public function destroy($id = null): JsonResponse
+    public function destroy($id = null): DestroyResponseContract
     {
-        if (! is_null($id) && $id > 0 && $item = PageModel::find($id)) {
-            event(app()->makeWith('InetStudio\Pages\Contracts\Events\ModifyPageEventContract', ['object' => $item]));
+        $item = $this->services['pages']->destroy($id);
 
-            $item->delete();
-
-            return response()->json([
-                'success' => true,
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-            ]);
-        }
+        return app()->makeWith('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\DestroyResponseContract', [
+            'page' => $item,
+        ]);
     }
 }

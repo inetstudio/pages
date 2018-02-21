@@ -1,9 +1,9 @@
 <?php
 
-namespace InetStudio\Pages\Events;
+namespace InetStudio\Pages\Events\Back;
 
 use Illuminate\Queue\SerializesModels;
-use InetStudio\Pages\Contracts\Events\ModifyPageEventContract;
+use InetStudio\Pages\Contracts\Events\Back\ModifyPageEventContract;
 
 /**
  * Class ModifyPageEvent.

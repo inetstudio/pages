@@ -16,6 +16,7 @@ use Spatie\Image\Exceptions\InvalidManipulation;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use InetStudio\Categories\Models\Traits\HasCategories;
+use InetStudio\Pages\Contracts\Models\PageModelContract;
 use InetStudio\Meta\Contracts\Models\Traits\MetableContract;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
@@ -61,7 +62,7 @@ use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
  * @method static \Illuminate\Database\Query\Builder|\InetStudio\Pages\Models\PageModel withoutTrashed()
  * @mixin \Eloquent
  */
-class PageModel extends Model implements MetableContract, HasMediaConversions
+class PageModel extends Model implements PageModelContract, MetableContract, HasMediaConversions
 {
     use HasTags;
     use Metable;
