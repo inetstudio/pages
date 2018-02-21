@@ -84,17 +84,17 @@ class PagesService implements PagesServiceContract
      *
      * @param $id
      *
-     * @return mixed
+     * @return bool
      */
-    public function destroy($id)
+    public function destroy(int $id): bool
     {
-        $item = $this->pagesRepository->destroy($id);
+        $item = $this->pagesRepository->getByID($id);
 
         event(app()->makeWith('InetStudio\Pages\Contracts\Events\Back\ModifyPageEventContract', [
             'object' => $item,
         ]));
 
-        return $item;
+        return $this->pagesRepository->destroy($id);
     }
 
     /**
@@ -103,9 +103,9 @@ class PagesService implements PagesServiceContract
      * @param string $search
      * @param $type
      *
-     * @return mixed
+     * @return array
      */
-    public function getSuggestions(string $search, $type)
+    public function getSuggestions(string $search, $type): array
     {
         $items = $this->pagesRepository->searchByField('title', $search);
 

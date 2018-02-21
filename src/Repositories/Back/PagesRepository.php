@@ -69,9 +69,9 @@ class PagesRepository implements PagesRepositoryContract
      *
      * @param int $id
      *
-     * @return PageModelContract
+     * @return bool
      */
-    public function destroy($id): PageModelContract
+    public function destroy($id): bool
     {
         return $this->getByID($id)->delete();
     }

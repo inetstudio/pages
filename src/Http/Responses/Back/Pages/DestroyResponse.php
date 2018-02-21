@@ -13,18 +13,18 @@ use InetStudio\Pages\Contracts\Http\Responses\Back\Pages\DestroyResponseContract
 class DestroyResponse implements DestroyResponseContract, Responsable
 {
     /**
-     * @var PageModelContract
+     * @var bool
      */
-    private $page;
+    private $result;
 
     /**
      * DestroyResponse constructor.
      *
-     * @param PageModelContract $page
+     * @param bool $result
      */
-    public function __construct(PageModelContract $page)
+    public function __construct(bool $result)
     {
-        $this->page = $page;
+        $this->result = $result;
     }
 
     /**
@@ -37,7 +37,7 @@ class DestroyResponse implements DestroyResponseContract, Responsable
     public function toResponse($request): JsonResponse
     {
         return response()->json([
-            'success' => ($this->page->id) ? true : false,
+            'success' => $this->result,
         ]);
     }
 }

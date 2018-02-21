@@ -129,10 +129,10 @@ class PagesController extends Controller implements PagesControllerContract
      */
     public function destroy(int $id = 0): DestroyResponseContract
     {
-        $item = $this->services['pages']->destroy($id);
+        $result = $this->services['pages']->destroy($id);
 
         return app()->makeWith('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\DestroyResponseContract', [
-            'page' => $item,
+            'result' => $result,
         ]);
     }
 }
