@@ -30,44 +30,44 @@ class SuggestionTransformer extends TransformerAbstract implements SuggestionTra
     /**
      * Подготовка данных для отображения в выпадающих списках.
      *
-     * @param PageModelContract $page
+     * @param PageModelContract $item
      *
      * @return array
      *
      * @throws \Throwable
      */
-    public function transform(PageModelContract $page): array
+    public function transform(PageModelContract $item): array
     {
         if ($this->type && $this->type == 'autocomplete') {
-            $modelClass = get_class($page);
+            $modelClass = get_class($item);
 
             return [
-                'value' => $page->title,
+                'value' => $item->title,
                 'data' => [
-                    'id' => $page->id,
+                    'id' => $item->id,
                     'type' => $modelClass,
-                    'title' => $page->title,
-                    'path' => parse_url($page->href, PHP_URL_PATH),
-                    'href' => $page->href,
+                    'title' => $item->title,
+                    'path' => parse_url($item->href, PHP_URL_PATH),
+                    'href' => $item->href,
                 ],
             ];
         } else {
             return [
-                'id' => $page->id,
-                'name' => $page->title,
+                'id' => $item->id,
+                'name' => $item->title,
             ];
         }
     }
 
     /**
-     * Обработка коллекции страниц.
+     * Обработка коллекции объектов.
      *
-     * @param $pages
+     * @param $items
      *
      * @return FractalCollection
      */
-    public function transformCollection($pages): FractalCollection
+    public function transformCollection($items): FractalCollection
     {
-        return new FractalCollection($pages, $this);
+        return new FractalCollection($items, $this);
     }
 }

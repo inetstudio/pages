@@ -27,7 +27,7 @@ class IndexResponse implements IndexResponseContract, Responsable
     }
 
     /**
-     * Возвращаем ответ при открытии списка страниц.
+     * Возвращаем ответ при открытии списка объектов.
      *
      * @param \Illuminate\Http\Request $request
      *

@@ -32,9 +32,10 @@ class PagesUtilityController extends Controller implements PagesUtilityControlle
     }
 
     /**
-     * Возвращаем страницы для поля.
+     * Возвращаем объекты для поля.
      *
      * @param Request $request
+     *
      * @return SuggestionsResponseContract
      */
     public function getSuggestions(Request $request): SuggestionsResponseContract

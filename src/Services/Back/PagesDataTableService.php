@@ -13,16 +13,16 @@ class PagesDataTableService extends DataTable implements PagesDataTableServiceCo
     /**
      * @var PagesRepositoryContract
      */
-    private $pagesRepository;
+    private $repository;
 
     /**
      * PagesService constructor.
      *
-     * @param PagesRepositoryContract $pagesRepository
+     * @param PagesRepositoryContract $repository
      */
-    public function __construct(PagesRepositoryContract $pagesRepository)
+    public function __construct(PagesRepositoryContract $repository)
     {
-        $this->pagesRepository = $pagesRepository;
+        $this->repository = $repository;
     }
 
     /**
@@ -49,7 +49,7 @@ class PagesDataTableService extends DataTable implements PagesDataTableServiceCo
      */
     public function query()
     {
-        $query = $this->pagesRepository->getAllPages(true);
+        $query = $this->repository->getAllPages(true);
 
         return $query;
     }

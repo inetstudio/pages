@@ -162,7 +162,7 @@ class PageModel extends Model implements PageModelContract, MetableContract, Has
     }
 
     /**
-     * Ссылка на страницу.
+     * Ссылка на объект.
      *
      * @return \Illuminate\Contracts\Routing\UrlGenerator|string
      */

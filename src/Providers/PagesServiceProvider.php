@@ -101,10 +101,10 @@ class PagesServiceProvider extends ServiceProvider
     public function registerViewComposers(): void
     {
         view()->composer('admin.module.pages::back.partials.analytics.materials.statistic', function ($view) {
-            $pagesCount = app()->make('InetStudio\Pages\Contracts\Repositories\Back\PagesRepositoryContract')
+            $itemsCount = app()->make('InetStudio\Pages\Contracts\Repositories\Back\PagesRepositoryContract')
                 ->getAllPages(true)->count();
 
-            $view->with('count', $pagesCount);
+            $view->with('count', $itemsCount);
         });
     }
 

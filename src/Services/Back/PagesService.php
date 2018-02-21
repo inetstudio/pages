@@ -18,20 +18,20 @@ class PagesService implements PagesServiceContract
     /**
      * @var PagesRepositoryContract
      */
-    private $pagesRepository;
+    private $repository;
 
     /**
      * PagesService constructor.
      *
-     * @param PagesRepositoryContract $pagesRepository
+     * @param PagesRepositoryContract $repository
      */
-    public function __construct(PagesRepositoryContract $pagesRepository)
+    public function __construct(PagesRepositoryContract $repository)
     {
-        $this->pagesRepository = $pagesRepository;
+        $this->repository = $repository;
     }
 
     /**
-     * Получаем объект модели страницы.
+     * Получаем объект модели.
      *
      * @param int $id
      *
@@ -39,11 +39,11 @@ class PagesService implements PagesServiceContract
      */
     public function getPageObject(int $id = 0)
     {
-        return $this->pagesRepository->getByID($id);
+        return $this->repository->getByID($id);
     }
 
     /**
-     * Сохраняем страницу.
+     * Сохраняем модель.
      *
      * @param SavePageRequestContract $request
      * @param int $id
@@ -53,7 +53,7 @@ class PagesService implements PagesServiceContract
     public function save(SavePageRequestContract $request, int $id): PageModelContract
     {
         $action = ($id) ? 'отредактирована' : 'создана';
-        $item = $this->pagesRepository->save($request, $id);
+        $item = $this->repository->save($request, $id);
 
         app()->make('InetStudio\Meta\Contracts\Services\Back\MetaServiceContract')
             ->attachToObject($request, $item);
@@ -80,7 +80,7 @@ class PagesService implements PagesServiceContract
     }
 
     /**
-     * Удаляем страницу.
+     * Удаляем модель.
      *
      * @param $id
      *
@@ -88,13 +88,13 @@ class PagesService implements PagesServiceContract
      */
     public function destroy(int $id): ?bool
     {
-        $item = $this->pagesRepository->getByID($id);
+        $item = $this->repository->getByID($id);
 
         event(app()->makeWith('InetStudio\Pages\Contracts\Events\Back\ModifyPageEventContract', [
             'object' => $item,
         ]));
 
-        return $this->pagesRepository->destroy($id);
+        return $this->repository->destroy($id);
     }
 
     /**
@@ -107,7 +107,7 @@ class PagesService implements PagesServiceContract
      */
     public function getSuggestions(string $search, $type): array
     {
-        $items = $this->pagesRepository->searchByField('title', $search);
+        $items = $this->repository->searchByField('title', $search);
 
         $resource = (app()->makeWith('InetStudio\Pages\Contracts\Transformers\Back\SuggestionTransformerContract', [
             'type' => $type,

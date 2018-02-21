@@ -15,20 +15,20 @@ class PagesService implements PagesServiceContract
     /**
      * @var PagesRepositoryContract
      */
-    private $pagesRepository;
+    private $repository;
 
     /**
      * PagesService constructor.
      *
-     * @param PagesRepositoryContract $pagesRepository
+     * @param PagesRepositoryContract $repository
      */
-    public function __construct(PagesRepositoryContract $pagesRepository)
+    public function __construct(PagesRepositoryContract $repository)
     {
-        $this->pagesRepository = $pagesRepository;
+        $this->repository = $repository;
     }
 
     /**
-     * Получаем страницу по slug.
+     * Получаем объект по slug.
      *
      * @param string $slug
      * @param bool $returnBuilder
@@ -37,11 +37,11 @@ class PagesService implements PagesServiceContract
      */
     public function getPageBySlug(string $slug, bool $returnBuilder = false)
     {
-        return $this->pagesRepository->getPageBySlug($slug, $returnBuilder);
+        return $this->repository->getPageBySlug($slug, $returnBuilder);
     }
 
     /**
-     * Получаем страницы по категории.
+     * Получаем объекты по категории.
      *
      * @param string $categorySlug
      * @param bool $returnBuilder
@@ -50,7 +50,7 @@ class PagesService implements PagesServiceContract
      */
     public function getPagesByCategory(string $categorySlug, bool $returnBuilder = false)
     {
-        return $this->pagesRepository->getPagesByCategory($categorySlug, $returnBuilder);
+        return $this->repository->getPagesByCategory($categorySlug, $returnBuilder);
     }
 
     /**
@@ -60,9 +60,9 @@ class PagesService implements PagesServiceContract
      */
     public function getSiteMapItems(): array
     {
-        $pages = $this->pagesRepository->getAllPages();
+        $items = $this->repository->getAllPages();
 
-        $resource = (app()->make('InetStudio\Pages\Contracts\Transformers\Front\PagesSiteMapTransformerContract'))->transformCollection($pages);
+        $resource = (app()->make('InetStudio\Pages\Contracts\Transformers\Front\PagesSiteMapTransformerContract'))->transformCollection($items);
 
         $manager = new Manager();
         $manager->setSerializer(new DataArraySerializer());

@@ -11,22 +11,22 @@ class PageTransformer extends TransformerAbstract implements PageTransformerCont
     /**
      * Подготовка данных для отображения в таблице.
      *
-     * @param PageModelContract $page
+     * @param PageModelContract $item
      *
      * @return array
      *
      * @throws \Throwable
      */
-    public function transform(PageModelContract $page): array
+    public function transform(PageModelContract $item): array
     {
         return [
-            'id' => (int) $page->id,
-            'title' => $page->title,
-            'created_at' => (string) $page->created_at,
-            'updated_at' => (string) $page->updated_at,
+            'id' => (int) $item->id,
+            'title' => $item->title,
+            'created_at' => (string) $item->created_at,
+            'updated_at' => (string) $item->updated_at,
             'actions' => view('admin.module.pages::back.partials.datatables.actions', [
-                'id' => $page->id,
-                'href' => $page->href,
+                'id' => $item->id,
+                'href' => $item->href,
             ])->render(),
         ];
     }

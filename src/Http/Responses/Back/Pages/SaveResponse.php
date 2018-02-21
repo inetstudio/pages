@@ -15,20 +15,20 @@ class SaveResponse implements SaveResponseContract, Responsable
     /**
      * @var PageModelContract
      */
-    private $page;
+    private $item;
 
     /**
      * SaveResponse constructor.
      *
-     * @param PageModelContract $page
+     * @param PageModelContract $item
      */
-    public function __construct(PageModelContract $page)
+    public function __construct(PageModelContract $item)
     {
-        $this->page = $page;
+        $this->item = $item;
     }
 
     /**
-     * Возвращаем ответ при сохранении страницы.
+     * Возвращаем ответ при сохранении объекта.
      *
      * @param \Illuminate\Http\Request $request
      *
@@ -37,7 +37,7 @@ class SaveResponse implements SaveResponseContract, Responsable
     public function toResponse($request): RedirectResponse
     {
         return response()->redirectToRoute('back.pages.edit', [
-            $this->page->fresh()->id,
+            $this->item->fresh()->id,
         ]);
     }
 }

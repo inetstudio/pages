@@ -15,31 +15,31 @@ class PagesSiteMapTransformer extends TransformerAbstract implements PagesSiteMa
     /**
      * Подготовка данных для отображения в карте сайта.
      *
-     * @param PageModelContract $page
+     * @param PageModelContract $item
      *
      * @return array
      *
      * @throws \Throwable
      */
-    public function transform(PageModelContract $page): array
+    public function transform(PageModelContract $item): array
     {
         return [
-            'loc' => $page->href,
-            'lastmod' => $page->updated_at->toW3cString(),
+            'loc' => $item->href,
+            'lastmod' => $item->updated_at->toW3cString(),
             'priority' => '0.6',
             'freq' => 'monthly',
         ];
     }
 
     /**
-     * Обработка коллекции страниц.
+     * Обработка коллекции объектов.
      *
-     * @param $pages
+     * @param $items
      *
      * @return FractalCollection
      */
-    public function transformCollection($pages): FractalCollection
+    public function transformCollection($items): FractalCollection
     {
-        return new FractalCollection($pages, $this);
+        return new FractalCollection($items, $this);
     }
 }

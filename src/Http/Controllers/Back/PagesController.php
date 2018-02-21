@@ -33,7 +33,7 @@ class PagesController extends Controller implements PagesControllerContract
     }
 
     /**
-     * Список страниц.
+     * Список объектов.
      *
      * @return IndexResponseContract
      */
@@ -47,7 +47,7 @@ class PagesController extends Controller implements PagesControllerContract
     }
 
     /**
-     * Добавление страницы.
+     * Добавление объекта.
      *
      * @return FormResponseContract
      */
@@ -62,7 +62,7 @@ class PagesController extends Controller implements PagesControllerContract
     }
 
     /**
-     * Создание страницы.
+     * Создание объекта.
      *
      * @param SavePageRequestContract $request
      *
@@ -74,7 +74,7 @@ class PagesController extends Controller implements PagesControllerContract
     }
 
     /**
-     * Редактирование страницы.
+     * Редактирование объекта.
      *
      * @param int $id
      *
@@ -91,7 +91,7 @@ class PagesController extends Controller implements PagesControllerContract
     }
 
     /**
-     * Обновление страницы.
+     * Обновление объекта.
      *
      * @param SavePageRequestContract $request
      * @param int $id
@@ -104,7 +104,7 @@ class PagesController extends Controller implements PagesControllerContract
     }
 
     /**
-     * Сохранение страницы.
+     * Сохранение объекта.
      *
      * @param SavePageRequestContract $request
      * @param int $id
@@ -116,12 +116,12 @@ class PagesController extends Controller implements PagesControllerContract
         $item = $this->services['pages']->save($request, $id);
 
         return app()->makeWith('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\SaveResponseContract', [
-            'page' => $item,
+            'item' => $item,
         ]);
     }
 
     /**
-     * Удаление страницы.
+     * Удаление объекта.
      *
      * @param int $id
      *

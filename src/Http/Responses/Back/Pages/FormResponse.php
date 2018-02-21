@@ -27,7 +27,7 @@ class FormResponse implements FormResponseContract, Responsable
     }
 
     /**
-     * Возвращаем ответ при открытии формы страницы.
+     * Возвращаем ответ при открытии формы объекта.
      *
      * @param \Illuminate\Http\Request $request
      *

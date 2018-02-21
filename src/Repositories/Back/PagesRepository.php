@@ -15,20 +15,20 @@ class PagesRepository implements PagesRepositoryContract
     /**
      * @var PageModelContract
      */
-    private $page;
+    private $model;
 
     /**
      * PagesRepository constructor.
      *
-     * @param PageModelContract $page
+     * @param PageModelContract $model
      */
-    public function __construct(PageModelContract $page)
+    public function __construct(PageModelContract $model)
     {
-        $this->page = $page;
+        $this->model = $model;
     }
 
     /**
-     * Возвращаем страницу по id, либо создаем новую.
+     * Возвращаем объект по id, либо создаем новый.
      *
      * @param int $id
      *
@@ -36,15 +36,15 @@ class PagesRepository implements PagesRepositoryContract
      */
     public function getByID(int $id): PageModelContract
     {
-        if (! (! is_null($id) && $id > 0 && $item = $this->page::find($id))) {
-            $item = $this->page;
+        if (! (! is_null($id) && $id > 0 && $item = $this->model::find($id))) {
+            $item = $this->model;
         }
 
         return $item;
     }
 
     /**
-     * Сохраняем страницу.
+     * Сохраняем объект.
      *
      * @param SavePageRequestContract $request
      * @param int $id
@@ -65,7 +65,7 @@ class PagesRepository implements PagesRepositoryContract
     }
 
     /**
-     * Удаляем страницу.
+     * Удаляем объект.
      *
      * @param int $id
      *
@@ -77,7 +77,7 @@ class PagesRepository implements PagesRepositoryContract
     }
 
     /**
-     * Ищем страницы.
+     * Ищем объекты.
      *
      * @param string $field
      * @param $value
@@ -86,11 +86,11 @@ class PagesRepository implements PagesRepositoryContract
      */
     public function searchByField(string $field, string $value): Collection
     {
-        return $this->page::select(['id', 'title', 'slug'])->where($field, 'LIKE', '%'.$value.'%')->get();
+        return $this->model::select(['id', 'title', 'slug'])->where($field, 'LIKE', '%'.$value.'%')->get();
     }
 
     /**
-     * Получаем все страницы.
+     * Получаем все объекты.
      *
      * @param bool $returnBuilder
      *
@@ -98,7 +98,7 @@ class PagesRepository implements PagesRepositoryContract
      */
     public function getAllPages(bool $returnBuilder = false)
     {
-        $builder = $this->page::select(['id', 'title', 'slug', 'created_at', 'updated_at'])
+        $builder = $this->model::select(['id', 'title', 'slug', 'created_at', 'updated_at'])
             ->orderBy('created_at', 'desc');
 
         if ($returnBuilder) {
@@ -109,7 +109,7 @@ class PagesRepository implements PagesRepositoryContract
     }
 
     /**
-     * Получаем страницу по slug.
+     * Получаем объекты по slug.
      *
      * @param string $slug
      * @param bool $returnBuilder
@@ -118,7 +118,7 @@ class PagesRepository implements PagesRepositoryContract
      */
     public function getPageBySlug(string $slug, bool $returnBuilder = false)
     {
-        $builder = $this->page::select(['id', 'title', 'content', 'slug'])
+        $builder = $this->model::select(['id', 'title', 'content', 'slug'])
             ->with(['meta' => function ($query) {
                 $query->select(['metable_id', 'metable_type', 'key', 'value']);
             }, 'media' => function ($query) {
@@ -130,13 +130,13 @@ class PagesRepository implements PagesRepositoryContract
             return $builder;
         }
 
-        $page = $builder->first();
+        $item = $builder->first();
 
-        return $page;
+        return $item;
     }
 
     /**
-     * Получаем страницы по категории.
+     * Получаем объекты по категории.
      *
      * @param string $slug
      * @param bool $returnBuilder
@@ -145,7 +145,7 @@ class PagesRepository implements PagesRepositoryContract
      */
     public function getPagesByCategory(string $slug, bool $returnBuilder = false)
     {
-        $builder = $this->page::select(['id', 'title', 'description', 'slug'])
+        $builder = $this->model::select(['id', 'title', 'description', 'slug'])
             ->with(['meta' => function ($query) {
                 $query->select(['metable_id', 'metable_type', 'key', 'value']);
             }, 'media' => function ($query) {

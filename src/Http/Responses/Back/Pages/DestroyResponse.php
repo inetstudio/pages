@@ -4,7 +4,6 @@ namespace InetStudio\Pages\Http\Responses\Back\Pages;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\Support\Responsable;
-use InetStudio\Pages\Contracts\Models\PageModelContract;
 use InetStudio\Pages\Contracts\Http\Responses\Back\Pages\DestroyResponseContract;
 
 /**
@@ -28,7 +27,7 @@ class DestroyResponse implements DestroyResponseContract, Responsable
     }
 
     /**
-     * Возвращаем ответ при удалении страницы.
+     * Возвращаем ответ при удалении объекта.
      *
      * @param \Illuminate\Http\Request $request
      *
