@@ -12,7 +12,7 @@ use InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract;
 class PagesRepository implements PagesRepositoryContract
 {
     /**
-     * @var PageModelContract $page
+     * @var PageModelContract
      */
     private $page;
 
@@ -35,7 +35,7 @@ class PagesRepository implements PagesRepositoryContract
      */
     public function getByID(int $id): PageModelContract
     {
-        if (!(! is_null($id) && $id > 0 && $item = $this->page::find($id))) {
+        if (! (! is_null($id) && $id > 0 && $item = $this->page::find($id))) {
             $item = $this->page;
         }
 

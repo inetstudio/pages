@@ -13,7 +13,7 @@ use InetStudio\Pages\Contracts\Http\Responses\Back\Pages\DestroyResponseContract
 class DestroyResponse implements DestroyResponseContract, Responsable
 {
     /**
-     * @var PageModelContract $page
+     * @var PageModelContract
      */
     private $page;
 

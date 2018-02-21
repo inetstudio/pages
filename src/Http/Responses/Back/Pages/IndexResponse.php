@@ -12,7 +12,7 @@ use InetStudio\Pages\Contracts\Http\Responses\Back\Pages\IndexResponseContract;
 class IndexResponse implements IndexResponseContract, Responsable
 {
     /**
-     * @var array $data
+     * @var array
      */
     private $data;
 

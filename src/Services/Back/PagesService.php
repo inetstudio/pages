@@ -14,7 +14,7 @@ use InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract;
 class PagesService implements PagesServiceContract
 {
     /**
-     * @var PagesRepositoryContract $pagesRepository
+     * @var PagesRepositoryContract
      */
     private $pagesRepository;
 
@@ -78,7 +78,7 @@ class PagesService implements PagesServiceContract
     {
         $item = $this->pagesRepository->destroy($id);
         event(app()->makeWith('InetStudio\Pages\Contracts\Events\ModifyPageEventContract', [
-            'object' => $item
+            'object' => $item,
         ]));
 
         return $item;
