@@ -50,7 +50,7 @@ class PagesService implements PagesServiceContract
      */
     public function getPagesByCategory(string $categorySlug, bool $returnBuilder = false)
     {
-        return $this->pagesRepository->getPageBySlug($categorySlug, $returnBuilder);
+        return $this->pagesRepository->getPagesByCategory($categorySlug, $returnBuilder);
     }
 
     /**
