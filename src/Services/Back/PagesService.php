@@ -3,7 +3,7 @@
 namespace InetStudio\Pages\Services\Back;
 
 use League\Fractal\Manager;
-use Illuminate\Contracts\Session\Session;
+use Illuminate\Support\Facades\Session;
 use League\Fractal\Serializer\DataArraySerializer;
 use InetStudio\Pages\Contracts\Models\PageModelContract;
 use InetStudio\Pages\Contracts\Services\Back\PagesServiceContract;
