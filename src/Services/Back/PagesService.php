@@ -55,7 +55,7 @@ class PagesService implements PagesServiceContract
         $action = ($id) ? 'отредактирована' : 'создана';
         $item = $this->pagesRepository->save($request, $id);
 
-        app()->make('InetStudio\Meta\Contracts\Events\Back\UpdateMetaEventContract')
+        app()->make('InetStudio\Meta\Contracts\Services\Back\MetaServiceContract')
             ->attachToObject($request, $item);
 
         app()->make('InetStudio\Categories\Contracts\Services\Back\CategoriesServiceContract')

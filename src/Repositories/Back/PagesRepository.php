@@ -90,15 +90,16 @@ class PagesRepository implements PagesRepositoryContract
     }
 
     /**
+     * Получаем все страницы.
+     *
      * @param bool $returnBuilder
      *
      * @return mixed
      */
     public function getAllPages(bool $returnBuilder = false)
     {
-        $builder = $this->page::select(['slug', 'created_at', 'updated_at'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $builder = $this->page::select(['id', 'title', 'slug', 'created_at', 'updated_at'])
+            ->orderBy('created_at', 'desc');
 
         if ($returnBuilder) {
             return $builder;
