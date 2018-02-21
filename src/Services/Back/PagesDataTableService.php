@@ -4,12 +4,27 @@ namespace InetStudio\Pages\Services\Back;
 
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Html\Builder;
-use InetStudio\Pages\Models\PageModel;
 use Yajra\DataTables\Services\DataTable;
+use InetStudio\Pages\Contracts\Repositories\Back\PagesRepositoryContract;
 use InetStudio\Pages\Contracts\Services\Back\PagesDataTableServiceContract;
 
 class PagesDataTableService extends DataTable implements PagesDataTableServiceContract
 {
+    /**
+     * @var PagesRepositoryContract
+     */
+    private $pagesRepository;
+
+    /**
+     * PagesService constructor.
+     *
+     * @param PagesRepositoryContract $pagesRepository
+     */
+    public function __construct(PagesRepositoryContract $pagesRepository)
+    {
+        $this->pagesRepository = $pagesRepository;
+    }
+
     /**
      * Запрос на получение данных таблицы.
      *
@@ -34,7 +49,7 @@ class PagesDataTableService extends DataTable implements PagesDataTableServiceCo
      */
     public function query()
     {
-        $query = PageModel::query();
+        $query = $this->pagesRepository->getAllPages(true);
 
         return $query;
     }

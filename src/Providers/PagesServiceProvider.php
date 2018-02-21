@@ -2,7 +2,6 @@
 
 namespace InetStudio\Pages\Providers;
 
-use InetStudio\Pages\Models\PageModel;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -102,7 +101,8 @@ class PagesServiceProvider extends ServiceProvider
     public function registerViewComposers(): void
     {
         view()->composer('admin.module.pages::back.partials.analytics.materials.statistic', function ($view) {
-            $pagesCount = PageModel::count();
+            $pagesCount = app()->make('InetStudio\Pages\Contracts\Repositories\Back\PagesRepositoryContract')
+                ->getAllPages(true)->count();
 
             $view->with('count', $pagesCount);
         });
@@ -137,6 +137,8 @@ class PagesServiceProvider extends ServiceProvider
         $this->app->bind('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\FormResponseContract', 'InetStudio\Pages\Http\Responses\Back\Pages\FormResponse');
         $this->app->bind('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\IndexResponseContract', 'InetStudio\Pages\Http\Responses\Back\Pages\IndexResponse');
         $this->app->bind('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\SaveResponseContract', 'InetStudio\Pages\Http\Responses\Back\Pages\SaveResponse');
+        $this->app->bind('InetStudio\Pages\Contracts\Http\Responses\Back\Utility\SlugResponseContract', 'InetStudio\Pages\Http\Responses\Back\Utility\SlugResponse');
+        $this->app->bind('InetStudio\Pages\Contracts\Http\Responses\Back\Utility\SuggestionsResponseContract', 'InetStudio\Pages\Http\Responses\Back\Utility\SuggestionsResponse');
 
         // Services
         $this->app->bind('InetStudio\Pages\Contracts\Services\Back\PagesServiceContract', 'InetStudio\Pages\Services\Back\PagesService');
@@ -145,6 +147,7 @@ class PagesServiceProvider extends ServiceProvider
 
         // Transformers
         $this->app->bind('InetStudio\Pages\Contracts\Transformers\Back\PageTransformerContract', 'InetStudio\Pages\Transformers\Back\PageTransformer');
+        $this->app->bind('InetStudio\Pages\Contracts\Transformers\Back\SuggestionTransformerContract', 'InetStudio\Pages\Transformers\Back\SuggestionTransformer');
         $this->app->bind('InetStudio\Pages\Contracts\Transformers\Front\PagesSiteMapTransformerContract', 'InetStudio\Pages\Transformers\Front\PagesSiteMapTransformer');
     }
 }

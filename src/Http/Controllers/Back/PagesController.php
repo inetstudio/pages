@@ -94,11 +94,11 @@ class PagesController extends Controller implements PagesControllerContract
      * Обновление страницы.
      *
      * @param SavePageRequestContract $request
-     * @param null $id
+     * @param int $id
      *
      * @return SaveResponseContract
      */
-    public function update(SavePageRequestContract $request, $id = null): SaveResponseContract
+    public function update(SavePageRequestContract $request, int $id = 0): SaveResponseContract
     {
         return $this->save($request, $id);
     }
@@ -107,11 +107,11 @@ class PagesController extends Controller implements PagesControllerContract
      * Сохранение страницы.
      *
      * @param SavePageRequestContract $request
-     * @param null $id
+     * @param int $id
      *
      * @return SaveResponseContract
      */
-    private function save(SavePageRequestContract $request, $id = null): SaveResponseContract
+    private function save(SavePageRequestContract $request, int $id = 0): SaveResponseContract
     {
         $item = $this->services['pages']->save($request, $id);
 
@@ -123,11 +123,11 @@ class PagesController extends Controller implements PagesControllerContract
     /**
      * Удаление страницы.
      *
-     * @param null $id
+     * @param int $id
      *
      * @return DestroyResponseContract
      */
-    public function destroy($id = null): DestroyResponseContract
+    public function destroy(int $id = 0): DestroyResponseContract
     {
         $item = $this->services['pages']->destroy($id);
 

@@ -2,7 +2,9 @@
 
 namespace InetStudio\Pages\Services\Back;
 
+use League\Fractal\Manager;
 use Illuminate\Contracts\Session\Session;
+use League\Fractal\Serializer\DataArraySerializer;
 use InetStudio\Pages\Contracts\Models\PageModelContract;
 use InetStudio\Pages\Contracts\Services\Back\PagesServiceContract;
 use InetStudio\Pages\Contracts\Repositories\Back\PagesRepositoryContract;
@@ -29,6 +31,8 @@ class PagesService implements PagesServiceContract
     }
 
     /**
+     * Получаем объект модели страницы.
+     *
      * @param int $id
      *
      * @return PageModelContract
@@ -64,23 +68,62 @@ class PagesService implements PagesServiceContract
         app()->make('InetStudio\AdminPanel\Contracts\Services\Back\Images\ImagesServiceContract')
             ->attachToObject($request, $item, $images, 'pages');
 
-        // Обновление поискового индекса.
         $item->searchable();
 
-        event(app()->makeWith('InetStudio\Pages\Contracts\Events\ModifyPageEventContract', ['object' => $item]));
+        event(app()->makeWith('InetStudio\Pages\Contracts\Events\ModifyPageEventContract', [
+            'object' => $item,
+        ]));
 
         Session::flash('success', 'Страница «'.$item->title.'» успешно '.$action);
 
         return $item;
     }
 
+    /**
+     * Удаляем страницу.
+     *
+     * @param $id
+     *
+     * @return mixed
+     */
     public function destroy($id)
     {
         $item = $this->pagesRepository->destroy($id);
+
         event(app()->makeWith('InetStudio\Pages\Contracts\Events\ModifyPageEventContract', [
             'object' => $item,
         ]));
 
         return $item;
+    }
+
+    /**
+     * Получаем подсказки.
+     *
+     * @param string $search
+     * @param $type
+     *
+     * @return mixed
+     */
+    public function getSuggestions(string $search, $type)
+    {
+        $items = $this->pagesRepository->searchByField('title', $search);
+
+        $resource = (app()->makeWith('InetStudio\Pages\Contracts\Transformers\Back\SuggestionTransformerContract', [
+            'type' => $type,
+        ]))->transformCollection($items);
+
+        $manager = new Manager();
+        $manager->setSerializer(new DataArraySerializer());
+
+        $transformation = $manager->createData($resource)->toArray();
+
+        if ($type && $type == 'autocomplete') {
+            $data['suggestions'] = $transformation['data'];
+        } else {
+            $data['items'] = $transformation['data'];
+        }
+
+        return $data;
     }
 }

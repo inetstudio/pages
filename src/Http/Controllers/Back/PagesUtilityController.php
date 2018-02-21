@@ -3,11 +3,11 @@
 namespace InetStudio\Pages\Http\Controllers\Back;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use InetStudio\Pages\Models\PageModel;
 use Cviebrock\EloquentSluggable\Services\SlugService;
+use InetStudio\Pages\Contracts\Http\Responses\Back\Utility\SlugResponseContract;
 use InetStudio\Pages\Contracts\Http\Controllers\Back\PagesUtilityControllerContract;
+use InetStudio\Pages\Contracts\Http\Responses\Back\Utility\SuggestionsResponseContract;
 
 /**
  * Class PagesUtilityController.
@@ -18,56 +18,35 @@ class PagesUtilityController extends Controller implements PagesUtilityControlle
      * Получаем slug для модели по строке.
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     *
+     * @return SlugResponseContract
      */
-    public function getSlug(Request $request): JsonResponse
+    public function getSlug(Request $request): SlugResponseContract
     {
         $name = $request->get('name');
-        $slug = ($name) ? SlugService::createSlug(PageModel::class, 'slug', $name) : '';
+        $slug = ($name) ? SlugService::createSlug(app()->make('InetStudio\Pages\Contracts\Models\PageModelContract'), 'slug', $name) : '';
 
-        return response()->json($slug);
+        return app()->makeWith('InetStudio\Pages\Contracts\Http\Responses\Back\Utility\SlugResponseContract', [
+            'slug' => $slug,
+        ]);
     }
 
     /**
      * Возвращаем страницы для поля.
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return SuggestionsResponseContract
      */
-    public function getSuggestions(Request $request): JsonResponse
+    public function getSuggestions(Request $request): SuggestionsResponseContract
     {
         $search = $request->get('q');
+        $type = $request->get('type');
 
-        $items = PageModel::select(['id', 'title', 'slug'])->where('title', 'LIKE', '%'.$search.'%')->get();
+        $data = app()->make('InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract')
+            ->getSuggestions($search, $type);
 
-        if ($request->filled('type') && $request->get('type') == 'autocomplete') {
-            $type = get_class(new PageModel());
-
-            $data = $items->mapToGroups(function ($item) use ($type) {
-                return [
-                    'suggestions' => [
-                        'value' => $item->title,
-                        'data' => [
-                            'id' => $item->id,
-                            'type' => $type,
-                            'title' => $item->title,
-                            'path' => parse_url($item->href, PHP_URL_PATH),
-                            'href' => $item->href,
-                        ],
-                    ],
-                ];
-            });
-        } else {
-            $data = $items->mapToGroups(function ($item) {
-                return [
-                    'items' => [
-                        'id' => $item->id,
-                        'name' => $item->title,
-                    ],
-                ];
-            });
-        }
-
-        return response()->json($data);
+        return app()->makeWith('InetStudio\Pages\Contracts\Http\Responses\Back\Utility\SuggestionsResponseContract', [
+            'suggestions' => $data,
+        ]);
     }
 }

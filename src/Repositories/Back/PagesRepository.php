@@ -2,6 +2,7 @@
 
 namespace InetStudio\Pages\Repositories\Back;
 
+use Illuminate\Support\Collection;
 use InetStudio\Pages\Contracts\Models\PageModelContract;
 use InetStudio\Pages\Contracts\Repositories\Back\PagesRepositoryContract;
 use InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract;
@@ -63,8 +64,98 @@ class PagesRepository implements PagesRepositoryContract
         return $item;
     }
 
-    public function destroy($id)
+    /**
+     * Удаляем страницу.
+     *
+     * @param int $id
+     *
+     * @return PageModelContract
+     */
+    public function destroy($id): PageModelContract
     {
         return $this->getByID($id)->delete();
+    }
+
+    /**
+     * Ищем страницы.
+     *
+     * @param string $field
+     * @param $value
+     *
+     * @return Collection
+     */
+    public function searchByField(string $field, string $value): Collection
+    {
+        return $this->page::select(['id', 'title', 'slug'])->where($field, 'LIKE', '%'.$value.'%')->get();
+    }
+
+    /**
+     * @param bool $returnBuilder
+     *
+     * @return mixed
+     */
+    public function getAllPages(bool $returnBuilder = false)
+    {
+        $builder = $this->page::select(['slug', 'created_at', 'updated_at'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        if ($returnBuilder) {
+            return $builder;
+        }
+
+        return $builder->get();
+    }
+
+    /**
+     * Получаем страницу по slug.
+     *
+     * @param string $slug
+     * @param bool $returnBuilder
+     *
+     * @return mixed
+     */
+    public function getPageBySlug(string $slug, bool $returnBuilder = false)
+    {
+        $builder = $this->page::select(['id', 'title', 'content', 'slug'])
+            ->with(['meta' => function ($query) {
+                $query->select(['metable_id', 'metable_type', 'key', 'value']);
+            }, 'media' => function ($query) {
+                $query->select(['id', 'model_id', 'model_type', 'collection_name', 'file_name', 'disk']);
+            }])
+            ->whereSlug($slug);
+
+        if ($returnBuilder) {
+            return $builder;
+        }
+
+        $page = $builder->first();
+
+        return $page;
+    }
+
+    /**
+     * Получаем страницы по категории.
+     *
+     * @param string $slug
+     * @param bool $returnBuilder
+     *
+     * @return mixed
+     */
+    public function getPagesByCategory(string $slug, bool $returnBuilder = false)
+    {
+        $builder = $this->page::select(['id', 'title', 'description', 'slug'])
+            ->with(['meta' => function ($query) {
+                $query->select(['metable_id', 'metable_type', 'key', 'value']);
+            }, 'media' => function ($query) {
+                $query->select(['id', 'model_id', 'model_type', 'collection_name', 'file_name', 'disk']);
+            }])
+            ->withCategories($slug);
+
+        if ($returnBuilder) {
+            return $builder;
+        }
+
+        return $builder->get();
     }
 }

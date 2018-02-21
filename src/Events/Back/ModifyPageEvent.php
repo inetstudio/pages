@@ -18,6 +18,7 @@ class ModifyPageEvent implements ModifyPageEventContract
      * Create a new event instance.
      *
      * ModifyPageEvent constructor.
+     *
      * @param $object
      */
     public function __construct($object)

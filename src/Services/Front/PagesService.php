@@ -3,15 +3,30 @@
 namespace InetStudio\Pages\Services\Front;
 
 use League\Fractal\Manager;
-use InetStudio\Pages\Models\PageModel;
 use League\Fractal\Serializer\DataArraySerializer;
 use InetStudio\Pages\Contracts\Services\Front\PagesServiceContract;
+use InetStudio\Pages\Contracts\Repositories\Back\PagesRepositoryContract;
 
 /**
  * Class PagesService.
  */
 class PagesService implements PagesServiceContract
 {
+    /**
+     * @var PagesRepositoryContract
+     */
+    private $pagesRepository;
+
+    /**
+     * PagesService constructor.
+     *
+     * @param PagesRepositoryContract $pagesRepository
+     */
+    public function __construct(PagesRepositoryContract $pagesRepository)
+    {
+        $this->pagesRepository = $pagesRepository;
+    }
+
     /**
      * Получаем страницу по slug.
      *
@@ -20,52 +35,22 @@ class PagesService implements PagesServiceContract
      *
      * @return mixed
      */
-    public static function getPageBySlug(string $slug, bool $returnBuilder = false)
+    public function getPageBySlug(string $slug, bool $returnBuilder = false)
     {
-        $builder = PageModel::select(['id', 'title', 'content', 'slug'])
-                ->with(['meta' => function ($query) {
-                    $query->select(['metable_id', 'metable_type', 'key', 'value']);
-                }, 'media' => function ($query) {
-                    $query->select(['id', 'model_id', 'model_type', 'collection_name', 'file_name', 'disk']);
-                }])
-                ->whereSlug($slug);
-
-        if ($returnBuilder) {
-            return $builder;
-        }
-
-        $page = $builder->first();
-
-        if (! $page) {
-            abort(404);
-        }
-
-        return $page;
+        return $this->pagesRepository->getPageBySlug($slug, $returnBuilder);
     }
 
     /**
      * Получаем страницы по категории.
      *
-     * @param $slug
+     * @param string $categorySlug
      * @param bool $returnBuilder
      *
      * @return mixed
      */
-    public static function getPagesByCategory($slug, bool $returnBuilder = false)
+    public function getPagesByCategory(string $categorySlug, bool $returnBuilder = false)
     {
-        $builder = PageModel::select(['id', 'title', 'description', 'slug'])
-            ->with(['meta' => function ($query) {
-                $query->select(['metable_id', 'metable_type', 'key', 'value']);
-            }, 'media' => function ($query) {
-                $query->select(['id', 'model_id', 'model_type', 'collection_name', 'file_name', 'disk']);
-            }])
-            ->withCategories($slug);
-
-        if ($returnBuilder) {
-            return $builder;
-        }
-
-        return $builder->get();
+        return $this->pagesRepository->getPageBySlug($categorySlug, $returnBuilder);
     }
 
     /**
@@ -75,9 +60,7 @@ class PagesService implements PagesServiceContract
      */
     public function getSiteMapItems(): array
     {
-        $pages = PageModel::select(['slug', 'created_at', 'updated_at'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $pages = $this->pagesRepository->getAllPages();
 
         $resource = (app()->make('InetStudio\Pages\Contracts\Transformers\Front\PagesSiteMapTransformerContract'))->transformCollection($pages);
 

@@ -2,8 +2,8 @@
 
 namespace InetStudio\Pages\Transformers\Back;
 
-use InetStudio\Pages\Models\PageModel;
 use League\Fractal\TransformerAbstract;
+use InetStudio\Pages\Contracts\Models\PageModelContract;
 use InetStudio\Pages\Contracts\Transformers\Back\PageTransformerContract;
 
 class PageTransformer extends TransformerAbstract implements PageTransformerContract
@@ -11,13 +11,13 @@ class PageTransformer extends TransformerAbstract implements PageTransformerCont
     /**
      * Подготовка данных для отображения в таблице.
      *
-     * @param PageModel $page
+     * @param PageModelContract $page
      *
      * @return array
      *
      * @throws \Throwable
      */
-    public function transform(PageModel $page): array
+    public function transform(PageModelContract $page): array
     {
         return [
             'id' => (int) $page->id,
