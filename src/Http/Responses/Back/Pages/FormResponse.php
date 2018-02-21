@@ -12,7 +12,7 @@ use InetStudio\Pages\Contracts\Http\Responses\Back\Pages\FormResponseContract;
 class FormResponse implements FormResponseContract, Responsable
 {
     /**
-     * @var array $data
+     * @var array
      */
     private $data;
 

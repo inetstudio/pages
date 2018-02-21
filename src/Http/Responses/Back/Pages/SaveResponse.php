@@ -13,7 +13,7 @@ use InetStudio\Pages\Contracts\Http\Responses\Back\Pages\SaveResponseContract;
 class SaveResponse implements SaveResponseContract, Responsable
 {
     /**
-     * @var PageModelContract $page
+     * @var PageModelContract
      */
     private $page;
 

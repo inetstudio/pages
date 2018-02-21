@@ -19,7 +19,7 @@ class PagesController extends Controller implements PagesControllerContract
     /**
      * Используемые сервисы.
      *
-     * @var array $services
+     * @var array
      */
     private $services;
 
