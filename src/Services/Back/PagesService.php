@@ -70,7 +70,7 @@ class PagesService implements PagesServiceContract
 
         $item->searchable();
 
-        event(app()->makeWith('InetStudio\Pages\Contracts\Events\ModifyPageEventContract', [
+        event(app()->makeWith('InetStudio\Pages\Contracts\Events\Back\ModifyPageEventContract', [
             'object' => $item,
         ]));
 
@@ -90,7 +90,7 @@ class PagesService implements PagesServiceContract
     {
         $item = $this->pagesRepository->destroy($id);
 
-        event(app()->makeWith('InetStudio\Pages\Contracts\Events\ModifyPageEventContract', [
+        event(app()->makeWith('InetStudio\Pages\Contracts\Events\Back\ModifyPageEventContract', [
             'object' => $item,
         ]));
 
