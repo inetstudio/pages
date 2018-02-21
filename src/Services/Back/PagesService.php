@@ -86,7 +86,7 @@ class PagesService implements PagesServiceContract
      *
      * @return bool
      */
-    public function destroy(int $id): bool
+    public function destroy(int $id): ?bool
     {
         $item = $this->pagesRepository->getByID($id);
 
