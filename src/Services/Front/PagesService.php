@@ -54,7 +54,7 @@ class PagesService implements PagesServiceContract
     }
 
     /**
-     * Получаем информацию по статьям для карты сайта.
+     * Получаем информацию по объектам для карты сайта.
      *
      * @return array
      */
@@ -62,7 +62,8 @@ class PagesService implements PagesServiceContract
     {
         $items = $this->repository->getAllPages();
 
-        $resource = (app()->make('InetStudio\Pages\Contracts\Transformers\Front\PagesSiteMapTransformerContract'))->transformCollection($items);
+        $resource = app()->make('InetStudio\Pages\Contracts\Transformers\Front\PagesSiteMapTransformerContract')
+            ->transformCollection($items);
 
         $manager = new Manager();
         $manager->setSerializer(new DataArraySerializer());

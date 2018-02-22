@@ -3,7 +3,6 @@
 namespace InetStudio\Pages\Http\Controllers\Back;
 
 use App\Http\Controllers\Controller;
-use InetStudio\Categories\Models\CategoryModel;
 use InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract;
 use InetStudio\Pages\Contracts\Http\Controllers\Back\PagesControllerContract;
 use InetStudio\Pages\Contracts\Http\Responses\Back\Pages\FormResponseContract;
@@ -28,6 +27,7 @@ class PagesController extends Controller implements PagesControllerContract
      */
     public function __construct()
     {
+        $this->services['categories'] = app()->make('InetStudio\Categories\Contracts\Services\Back\CategoriesServiceContract');
         $this->services['pages'] = app()->make('InetStudio\Pages\Contracts\Services\Back\PagesServiceContract');
         $this->services['dataTables'] = app()->make('InetStudio\Pages\Contracts\Services\Back\PagesDataTableServiceContract');
     }
@@ -54,7 +54,7 @@ class PagesController extends Controller implements PagesControllerContract
     public function create(): FormResponseContract
     {
         $item = $this->services['pages']->getPageObject();
-        $categories = CategoryModel::getTree();
+        $categories = $this->services['categories']->getTree();
 
         return app()->makeWith('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\FormResponseContract', [
             'data' => compact('item', 'categories'),
@@ -83,7 +83,7 @@ class PagesController extends Controller implements PagesControllerContract
     public function edit($id = 0): FormResponseContract
     {
         $item = $this->services['pages']->getPageObject($id);
-        $categories = CategoryModel::getTree();
+        $categories = $this->services['categories']->getTree();
 
         return app()->makeWith('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\FormResponseContract', [
             'data' => compact('item', 'categories'),
