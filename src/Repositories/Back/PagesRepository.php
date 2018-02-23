@@ -6,12 +6,15 @@ use Illuminate\Support\Collection;
 use InetStudio\Pages\Contracts\Models\PageModelContract;
 use InetStudio\Pages\Contracts\Repositories\Back\PagesRepositoryContract;
 use InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract;
+use InetStudio\Categories\Repositories\Back\Traits\CategoriesRepositoryTrait;
 
 /**
  * Class PagesRepository.
  */
 class PagesRepository implements PagesRepositoryContract
 {
+    use CategoriesRepositoryTrait;
+
     /**
      * @var PageModelContract
      */
@@ -34,13 +37,33 @@ class PagesRepository implements PagesRepositoryContract
      *
      * @return PageModelContract
      */
-    public function getByID(int $id): PageModelContract
+    public function getItemByID(int $id): PageModelContract
     {
         if (! (! is_null($id) && $id > 0 && $item = $this->model::find($id))) {
             $item = $this->model;
         }
 
         return $item;
+    }
+
+    /**
+     * Возвращаем объекты по списку id.
+     *
+     * @param $ids
+     * @param bool $returnBuilder
+     *
+     * @return Collection
+     */
+    public function getItemsByIDs($ids, bool $returnBuilder = false): Collection
+    {
+        $builder = $this->model::select(['id', 'title', 'slug'])
+            ->whereIn('id', (array) $ids);
+
+        if ($returnBuilder) {
+            return $builder;
+        }
+
+        return $builder->get();
     }
 
     /**
@@ -53,7 +76,7 @@ class PagesRepository implements PagesRepositoryContract
      */
     public function save(SavePageRequestContract $request, int $id): PageModelContract
     {
-        $item = $this->getByID($id);
+        $item = $this->getItemByID($id);
 
         $item->title = strip_tags($request->get('title'));
         $item->slug = strip_tags($request->get('slug'));
@@ -73,7 +96,7 @@ class PagesRepository implements PagesRepositoryContract
      */
     public function destroy($id): ?bool
     {
-        return $this->getByID($id)->delete();
+        return $this->getItemByID($id)->delete();
     }
 
     /**
@@ -84,7 +107,7 @@ class PagesRepository implements PagesRepositoryContract
      *
      * @return Collection
      */
-    public function searchByField(string $field, string $value): Collection
+    public function searchItemsByField(string $field, string $value): Collection
     {
         return $this->model::select(['id', 'title', 'slug'])->where($field, 'LIKE', '%'.$value.'%')->get();
     }
@@ -96,7 +119,7 @@ class PagesRepository implements PagesRepositoryContract
      *
      * @return mixed
      */
-    public function getAllPages(bool $returnBuilder = false)
+    public function getAllItems(bool $returnBuilder = false)
     {
         $builder = $this->model::select(['id', 'title', 'slug', 'created_at', 'updated_at'])
             ->orderBy('created_at', 'desc');
@@ -116,7 +139,7 @@ class PagesRepository implements PagesRepositoryContract
      *
      * @return mixed
      */
-    public function getPageBySlug(string $slug, bool $returnBuilder = false)
+    public function getItemBySlug(string $slug, bool $returnBuilder = false)
     {
         $builder = $this->model::select(['id', 'title', 'content', 'slug'])
             ->with(['meta' => function ($query) {
@@ -133,30 +156,5 @@ class PagesRepository implements PagesRepositoryContract
         $item = $builder->first();
 
         return $item;
-    }
-
-    /**
-     * Получаем объекты по категории.
-     *
-     * @param string $slug
-     * @param bool $returnBuilder
-     *
-     * @return mixed
-     */
-    public function getPagesByCategory(string $slug, bool $returnBuilder = false)
-    {
-        $builder = $this->model::select(['id', 'title', 'description', 'slug'])
-            ->with(['meta' => function ($query) {
-                $query->select(['metable_id', 'metable_type', 'key', 'value']);
-            }, 'media' => function ($query) {
-                $query->select(['id', 'model_id', 'model_type', 'collection_name', 'file_name', 'disk']);
-            }])
-            ->withCategories($slug);
-
-        if ($returnBuilder) {
-            return $builder;
-        }
-
-        return $builder->get();
     }
 }

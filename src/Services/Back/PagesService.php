@@ -39,7 +39,7 @@ class PagesService implements PagesServiceContract
      */
     public function getPageObject(int $id = 0)
     {
-        return $this->repository->getByID($id);
+        return $this->repository->getItemByID($id);
     }
 
     /**
@@ -88,7 +88,7 @@ class PagesService implements PagesServiceContract
      */
     public function destroy(int $id): ?bool
     {
-        $item = $this->repository->getByID($id);
+        $item = $this->repository->getItemByID($id);
 
         event(app()->makeWith('InetStudio\Pages\Contracts\Events\Back\ModifyPageEventContract', [
             'object' => $item,
@@ -107,7 +107,7 @@ class PagesService implements PagesServiceContract
      */
     public function getSuggestions(string $search, $type): array
     {
-        $items = $this->repository->searchByField('title', $search);
+        $items = $this->repository->searchItemsByField('title', $search);
 
         $resource = (app()->makeWith('InetStudio\Pages\Contracts\Transformers\Back\SuggestionTransformerContract', [
             'type' => $type,

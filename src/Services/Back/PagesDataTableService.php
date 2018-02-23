@@ -49,7 +49,7 @@ class PagesDataTableService extends DataTable implements PagesDataTableServiceCo
      */
     public function query()
     {
-        $query = $this->repository->getAllPages(true);
+        $query = $this->repository->getAllItems(true);
 
         return $query;
     }

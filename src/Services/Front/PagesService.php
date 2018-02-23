@@ -37,7 +37,7 @@ class PagesService implements PagesServiceContract
      */
     public function getPageBySlug(string $slug, bool $returnBuilder = false)
     {
-        return $this->repository->getPageBySlug($slug, $returnBuilder);
+        return $this->repository->getItemBySlug($slug, $returnBuilder);
     }
 
     /**
@@ -50,7 +50,7 @@ class PagesService implements PagesServiceContract
      */
     public function getPagesByCategory(string $categorySlug, bool $returnBuilder = false)
     {
-        return $this->repository->getPagesByCategory($categorySlug, $returnBuilder);
+        return $this->repository->getItemsByCategory($categorySlug, $returnBuilder);
     }
 
     /**
@@ -60,7 +60,7 @@ class PagesService implements PagesServiceContract
      */
     public function getSiteMapItems(): array
     {
-        $items = $this->repository->getAllPages();
+        $items = $this->repository->getAllItems();
 
         $resource = app()->make('InetStudio\Pages\Contracts\Transformers\Front\PagesSiteMapTransformerContract')
             ->transformCollection($items);
