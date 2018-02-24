@@ -2,11 +2,9 @@
 
 namespace InetStudio\Pages\Models;
 
-use Spatie\Tags\HasTags;
 use Cocur\Slugify\Slugify;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\Media;
-use InetStudio\Tags\Models\TagModel;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use InetStudio\Meta\Models\Traits\Metable;
@@ -64,7 +62,6 @@ use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
  */
 class PageModel extends Model implements PageModelContract, MetableContract, HasMediaConversions
 {
-    use HasTags;
     use Metable;
     use Sluggable;
     use Searchable;
@@ -169,16 +166,6 @@ class PageModel extends Model implements PageModelContract, MetableContract, Has
     public function getHrefAttribute()
     {
         return url(self::HREF.(! empty($this->slug) ? $this->slug : $this->id));
-    }
-
-    /**
-     * Возвращаем класс модели тега.
-     *
-     * @return string
-     */
-    public static function getTagClassName()
-    {
-        return TagModel::class;
     }
 
     /**

@@ -43,6 +43,19 @@ class PagesService implements PagesServiceContract
     }
 
     /**
+     * Получаем объекты по списку id.
+     *
+     * @param array|int $ids
+     * @param bool $returnBuilder
+     *
+     * @return mixed
+     */
+    public function getPagesByIDs($ids, bool $returnBuilder = false)
+    {
+        return $this->repository->getItemsByIDs($ids, $returnBuilder);
+    }
+
+    /**
      * Сохраняем модель.
      *
      * @param SavePageRequestContract $request

@@ -43,7 +43,7 @@ class PagesUtilityController extends Controller implements PagesUtilityControlle
         $search = $request->get('q');
         $type = $request->get('type');
 
-        $data = app()->make('InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract')
+        $data = app()->make('InetStudio\Pages\Contracts\Services\Back\PagesServiceContract')
             ->getSuggestions($search, $type);
 
         return app()->makeWith('InetStudio\Pages\Contracts\Http\Responses\Back\Utility\SuggestionsResponseContract', [

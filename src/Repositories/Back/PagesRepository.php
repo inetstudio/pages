@@ -52,9 +52,9 @@ class PagesRepository implements PagesRepositoryContract
      * @param $ids
      * @param bool $returnBuilder
      *
-     * @return Collection
+     * @return mixed
      */
-    public function getItemsByIDs($ids, bool $returnBuilder = false): Collection
+    public function getItemsByIDs($ids, bool $returnBuilder = false)
     {
         $builder = $this->model::select(['id', 'title', 'slug'])
             ->whereIn('id', (array) $ids);
@@ -104,12 +104,20 @@ class PagesRepository implements PagesRepositoryContract
      *
      * @param string $field
      * @param $value
+     * @param bool $returnBuilder
      *
-     * @return Collection
+     * @return mixed
      */
-    public function searchItemsByField(string $field, string $value): Collection
+    public function searchItemsByField(string $field, string $value, bool $returnBuilder = false)
     {
-        return $this->model::select(['id', 'title', 'slug'])->where($field, 'LIKE', '%'.$value.'%')->get();
+        $builder = $this->model::select(['id', 'title', 'slug'])
+            ->where($field, 'LIKE', '%'.$value.'%');
+
+        if ($returnBuilder) {
+            return $builder;
+        }
+
+        return $builder->get();
     }
 
     /**
