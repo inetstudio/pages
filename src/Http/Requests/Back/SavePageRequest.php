@@ -74,7 +74,7 @@ class SavePageRequest extends FormRequest implements SavePageRequestContract
 
             'og_image.crop.default' => [
                 'nullable', 'json',
-                new CropSize(968,475,'min', ''),
+                new CropSize(968, 475, 'min', ''),
             ],
 
             'title' => 'required|max:255',
@@ -82,11 +82,11 @@ class SavePageRequest extends FormRequest implements SavePageRequestContract
 
             'preview.crop.3_2' => [
                 'nullable', 'json',
-                new CropSize(768,512,'min', '3x2'),
+                new CropSize(768, 512, 'min', '3x2'),
             ],
             'preview.crop.3_4' => [
                 'nullable', 'json',
-                new CropSize(384,512,'min', '3x4'),
+                new CropSize(384, 512, 'min', '3x4'),
             ],
             'preview.description' => 'max:255',
             'preview.copyright' => 'max:255',
