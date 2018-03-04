@@ -138,8 +138,8 @@ class PagesServiceProvider extends ServiceProvider
         $this->app->bind('InetStudio\Pages\Contracts\Models\PageModelContract', 'InetStudio\Pages\Models\PageModel');
 
         // Observers
-        $this->app->bind('InetStudio\Pages\Contracts\Observers\PageObserverContract', 'InetStudio\Pages\Observers\PageObserver');        
-        
+        $this->app->bind('InetStudio\Pages\Contracts\Observers\PageObserverContract', 'InetStudio\Pages\Observers\PageObserver');
+
         // Repositories
         $this->app->bind('InetStudio\Pages\Contracts\Repositories\PagesRepositoryContract', 'InetStudio\Pages\Repositories\PagesRepository');
 
