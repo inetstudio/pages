@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Session;
 use League\Fractal\Serializer\DataArraySerializer;
 use InetStudio\Pages\Contracts\Models\PageModelContract;
 use InetStudio\Pages\Contracts\Services\Back\PagesServiceContract;
-use InetStudio\Pages\Contracts\Repositories\Back\PagesRepositoryContract;
+use InetStudio\Pages\Contracts\Repositories\PagesRepositoryContract;
 use InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract;
 
 /**
@@ -77,9 +77,9 @@ class PagesService implements PagesServiceContract
         app()->make('InetStudio\Tags\Contracts\Services\Back\TagsServiceContract')
             ->attachToObject($request, $item);
 
-        $images = (config('pages.images.conversions')) ? array_keys(config('pages.images.conversions')) : [];
-        app()->make('InetStudio\AdminPanel\Contracts\Services\Back\Images\ImagesServiceContract')
-            ->attachToObject($request, $item, $images, 'pages');
+        $images = (config('pages.images.conversions.page')) ? array_keys(config('pages.images.conversions.page')) : [];
+        app()->make('InetStudio\Uploads\Contracts\Services\Back\ImagesServiceContract')
+            ->attachToObject($request, $item, $images, 'pages', 'page');
 
         $item->searchable();
 
@@ -101,12 +101,6 @@ class PagesService implements PagesServiceContract
      */
     public function destroy(int $id): ?bool
     {
-        $item = $this->repository->getItemByID($id);
-
-        event(app()->makeWith('InetStudio\Pages\Contracts\Events\Back\ModifyPageEventContract', [
-            'object' => $item,
-        ]));
-
         return $this->repository->destroy($id);
     }
 

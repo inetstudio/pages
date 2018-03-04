@@ -21,6 +21,7 @@ class PagesServiceProvider extends ServiceProvider
         $this->registerRoutes();
         $this->registerViews();
         $this->registerViewComposers();
+        $this->registerObservers();
     }
 
     /**
@@ -101,11 +102,21 @@ class PagesServiceProvider extends ServiceProvider
     public function registerViewComposers(): void
     {
         view()->composer('admin.module.pages::back.partials.analytics.materials.statistic', function ($view) {
-            $itemsCount = app()->make('InetStudio\Pages\Contracts\Repositories\Back\PagesRepositoryContract')
-                ->getAllPages(true)->count();
+            $itemsCount = app()->make('InetStudio\Pages\Contracts\Repositories\PagesRepositoryContract')
+                ->getAllItems(true)->count();
 
             $view->with('count', $itemsCount);
         });
+    }
+
+    /**
+     * Регистрация наблюдателей.
+     *
+     * @return void
+     */
+    public function registerObservers(): void
+    {
+        $this->app->make('InetStudio\Pages\Contracts\Models\PageModelContract')::observe($this->app->make('InetStudio\Pages\Contracts\Observers\PageObserverContract'));
     }
 
     /**
@@ -126,8 +137,11 @@ class PagesServiceProvider extends ServiceProvider
         // Models
         $this->app->bind('InetStudio\Pages\Contracts\Models\PageModelContract', 'InetStudio\Pages\Models\PageModel');
 
+        // Observers
+        $this->app->bind('InetStudio\Pages\Contracts\Observers\PageObserverContract', 'InetStudio\Pages\Observers\PageObserver');        
+        
         // Repositories
-        $this->app->bind('InetStudio\Pages\Contracts\Repositories\Back\PagesRepositoryContract', 'InetStudio\Pages\Repositories\Back\PagesRepository');
+        $this->app->bind('InetStudio\Pages\Contracts\Repositories\PagesRepositoryContract', 'InetStudio\Pages\Repositories\PagesRepository');
 
         // Requests
         $this->app->bind('InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract', 'InetStudio\Pages\Http\Requests\Back\SavePageRequest');
@@ -141,8 +155,9 @@ class PagesServiceProvider extends ServiceProvider
         $this->app->bind('InetStudio\Pages\Contracts\Http\Responses\Back\Utility\SuggestionsResponseContract', 'InetStudio\Pages\Http\Responses\Back\Utility\SuggestionsResponse');
 
         // Services
-        $this->app->bind('InetStudio\Pages\Contracts\Services\Back\PagesServiceContract', 'InetStudio\Pages\Services\Back\PagesService');
         $this->app->bind('InetStudio\Pages\Contracts\Services\Back\PagesDataTableServiceContract', 'InetStudio\Pages\Services\Back\PagesDataTableService');
+        $this->app->bind('InetStudio\Pages\Contracts\Services\Back\PagesObserverServiceContract', 'InetStudio\Pages\Services\Back\PagesObserverService');
+        $this->app->bind('InetStudio\Pages\Contracts\Services\Back\PagesServiceContract', 'InetStudio\Pages\Services\Back\PagesService');
         $this->app->bind('InetStudio\Pages\Contracts\Services\Front\PagesServiceContract', 'InetStudio\Pages\Services\Front\PagesService');
 
         // Transformers

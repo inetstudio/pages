@@ -1,6 +1,6 @@
 <?php
 
-namespace InetStudio\Pages\Contracts\Repositories\Back;
+namespace InetStudio\Pages\Contracts\Repositories;
 
 /**
  * Interface PagesRepositoryContract.

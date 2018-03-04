@@ -5,7 +5,7 @@ namespace InetStudio\Pages\Services\Back;
 use Yajra\DataTables\DataTables;
 use Yajra\DataTables\Html\Builder;
 use Yajra\DataTables\Services\DataTable;
-use InetStudio\Pages\Contracts\Repositories\Back\PagesRepositoryContract;
+use InetStudio\Pages\Contracts\Repositories\PagesRepositoryContract;
 use InetStudio\Pages\Contracts\Services\Back\PagesDataTableServiceContract;
 
 class PagesDataTableService extends DataTable implements PagesDataTableServiceContract

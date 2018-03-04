@@ -5,7 +5,7 @@ namespace InetStudio\Pages\Services\Front;
 use League\Fractal\Manager;
 use League\Fractal\Serializer\DataArraySerializer;
 use InetStudio\Pages\Contracts\Services\Front\PagesServiceContract;
-use InetStudio\Pages\Contracts\Repositories\Back\PagesRepositoryContract;
+use InetStudio\Pages\Contracts\Repositories\PagesRepositoryContract;
 
 /**
  * Class PagesService.

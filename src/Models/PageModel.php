@@ -4,13 +4,12 @@ namespace InetStudio\Pages\Models;
 
 use Cocur\Slugify\Slugify;
 use Laravel\Scout\Searchable;
-use Spatie\MediaLibrary\Media;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use InetStudio\Meta\Models\Traits\Metable;
+use InetStudio\Tags\Models\Traits\HasTags;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\Image\Exceptions\InvalidManipulation;
+use InetStudio\Uploads\Models\Traits\HasImages;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use InetStudio\Categories\Models\Traits\HasCategories;
@@ -19,60 +18,25 @@ use InetStudio\Meta\Contracts\Models\Traits\MetableContract;
 use Spatie\MediaLibrary\HasMedia\Interfaces\HasMediaConversions;
 use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
 
-/**
- * InetStudio\Pages\Models\PageModel.
- *
- * @property int $id
- * @property string $title
- * @property string $slug
- * @property string|null $description
- * @property string|null $content
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
- * @property \Carbon\Carbon|null $deleted_at
- * @property \Kalnoy\Nestedset\Collection|\InetStudio\Categories\Models\CategoryModel[] $categories
- * @property-read \Illuminate\Database\Eloquent\Collection|\InetStudio\SimpleCounters\Models\SimpleCounterModel[] $counters
- * @property-read \Illuminate\Contracts\Routing\UrlGenerator|string $href
- * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\MediaLibrary\Media[] $media
- * @property-read \Illuminate\Database\Eloquent\Collection|\InetStudio\Meta\Models\MetaModel[] $meta
- * @property-read \Illuminate\Database\Eloquent\Collection|\Venturecraft\Revisionable\Revision[] $revisionHistory
- * @property \Illuminate\Database\Eloquent\Collection|\InetStudio\Tags\Models\TagModel[] $tags
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Pages\Models\PageModel findSimilarSlugs($attribute, $config, $slug)
- * @method static bool|null forceDelete()
- * @method static \Illuminate\Database\Query\Builder|\InetStudio\Pages\Models\PageModel onlyTrashed()
- * @method static bool|null restore()
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Pages\Models\PageModel whereContent($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Pages\Models\PageModel whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Pages\Models\PageModel whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Pages\Models\PageModel whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Pages\Models\PageModel whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Pages\Models\PageModel whereSlug($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Pages\Models\PageModel whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Pages\Models\PageModel whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Pages\Models\PageModel withAllCategories($categories, $column = 'slug')
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Pages\Models\PageModel withAllTags($tags, $type = null)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Pages\Models\PageModel withAnyCategories($categories, $column = 'slug')
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Pages\Models\PageModel withAnyTags($tags, $type = null)
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Pages\Models\PageModel withCategories($categories, $column = 'slug')
- * @method static \Illuminate\Database\Query\Builder|\InetStudio\Pages\Models\PageModel withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Pages\Models\PageModel withoutAnyCategories()
- * @method static \Illuminate\Database\Eloquent\Builder|\InetStudio\Pages\Models\PageModel withoutCategories($categories, $column = 'slug')
- * @method static \Illuminate\Database\Query\Builder|\InetStudio\Pages\Models\PageModel withoutTrashed()
- * @mixin \Eloquent
- */
 class PageModel extends Model implements PageModelContract, MetableContract, HasMediaConversions
 {
+    use HasTags;
     use Metable;
     use Sluggable;
+    use HasImages;
     use Searchable;
     use SoftDeletes;
     use HasCategories;
-    use HasMediaTrait;
     use RevisionableTrait;
     use SluggableScopeHelpers;
     use HasSimpleCountersTrait;
 
     const HREF = '/page/';
+
+    protected $images = [
+        'config' => 'pages',
+        'model' => 'page',
+    ];
 
     /**
      * Связанная с моделью таблица.
@@ -166,47 +130,5 @@ class PageModel extends Model implements PageModelContract, MetableContract, Has
     public function getHrefAttribute()
     {
         return url(self::HREF.(! empty($this->slug) ? $this->slug : $this->id));
-    }
-
-    /**
-     * Регистрируем преобразования изображений.
-     *
-     * @param Media|null $media
-     * @throws InvalidManipulation
-     */
-    public function registerMediaConversions(Media $media = null)
-    {
-        $quality = (config('pages.images.quality')) ? config('pages.images.quality') : 75;
-
-        if (config('pages.images.conversions')) {
-            foreach (config('pages.images.conversions') as $collection => $image) {
-                foreach ($image as $crop) {
-                    foreach ($crop as $conversion) {
-                        $imageConversion = $this->addMediaConversion($conversion['name'])->nonQueued();
-
-                        if (isset($conversion['size']['width'])) {
-                            $imageConversion->width($conversion['size']['width']);
-                        }
-
-                        if (isset($conversion['size']['height'])) {
-                            $imageConversion->height($conversion['size']['height']);
-                        }
-
-                        if (isset($conversion['fit']['width']) && isset($conversion['fit']['height'])) {
-                            $imageConversion->fit('max', $conversion['fit']['width'], $conversion['fit']['height']);
-                        }
-
-                        if (isset($conversion['quality'])) {
-                            $imageConversion->quality($conversion['quality']);
-                            $imageConversion->optimize();
-                        } else {
-                            $imageConversion->quality($quality);
-                        }
-
-                        $imageConversion->performOnCollections($collection);
-                    }
-                }
-            }
-        }
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace InetStudio\Pages\Repositories\Back;
+namespace InetStudio\Pages\Repositories;
 
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
 use InetStudio\Pages\Contracts\Models\PageModelContract;
-use InetStudio\Pages\Contracts\Repositories\Back\PagesRepositoryContract;
+use InetStudio\Pages\Contracts\Repositories\PagesRepositoryContract;
+use InetStudio\Categories\Repositories\Traits\CategoriesRepositoryTrait;
 use InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract;
-use InetStudio\Categories\Repositories\Back\Traits\CategoriesRepositoryTrait;
 
 /**
  * Class PagesRepository.
@@ -56,8 +56,7 @@ class PagesRepository implements PagesRepositoryContract
      */
     public function getItemsByIDs($ids, bool $returnBuilder = false)
     {
-        $builder = $this->model::select(['id', 'title', 'slug'])
-            ->whereIn('id', (array) $ids);
+        $builder = $this->getItemsQuery()->whereIn('id', (array) $ids);
 
         if ($returnBuilder) {
             return $builder;
@@ -80,7 +79,7 @@ class PagesRepository implements PagesRepositoryContract
 
         $item->title = strip_tags($request->get('title'));
         $item->slug = strip_tags($request->get('slug'));
-        $item->description = strip_tags($request->input('description.text'));
+        $item->description = $request->input('description.text');
         $item->content = $request->input('content.text');
         $item->save();
 
@@ -110,8 +109,7 @@ class PagesRepository implements PagesRepositoryContract
      */
     public function searchItemsByField(string $field, string $value, bool $returnBuilder = false)
     {
-        $builder = $this->model::select(['id', 'title', 'slug'])
-            ->where($field, 'LIKE', '%'.$value.'%');
+        $builder = $this->getItemsQuery()->where($field, 'LIKE', '%'.$value.'%');
 
         if ($returnBuilder) {
             return $builder;
@@ -129,8 +127,7 @@ class PagesRepository implements PagesRepositoryContract
      */
     public function getAllItems(bool $returnBuilder = false)
     {
-        $builder = $this->model::select(['id', 'title', 'slug', 'created_at', 'updated_at'])
-            ->orderBy('created_at', 'desc');
+        $builder = $this->getItemsQuery(['created_at', 'updated_at'], [])->orderBy('created_at', 'desc');
 
         if ($returnBuilder) {
             return $builder;
@@ -149,13 +146,7 @@ class PagesRepository implements PagesRepositoryContract
      */
     public function getItemBySlug(string $slug, bool $returnBuilder = false)
     {
-        $builder = $this->model::select(['id', 'title', 'content', 'slug'])
-            ->with(['meta' => function ($query) {
-                $query->select(['metable_id', 'metable_type', 'key', 'value']);
-            }, 'media' => function ($query) {
-                $query->select(['id', 'model_id', 'model_type', 'collection_name', 'file_name', 'disk']);
-            }])
-            ->whereSlug($slug);
+        $builder = $this->getItemsQuery(['content'], ['meta', 'media'])->whereSlug($slug);
 
         if ($returnBuilder) {
             return $builder;
@@ -164,5 +155,35 @@ class PagesRepository implements PagesRepositoryContract
         $item = $builder->first();
 
         return $item;
+    }
+
+    /**
+     * Возвращаем запрос на получение объектов.
+     *
+     * @param array $extColumns
+     * @param array $with
+     *
+     * @return Builder
+     */
+    protected function getItemsQuery($extColumns = [], $with = []): Builder
+    {
+        $defaultColumns = ['id', 'title', 'slug'];
+
+        $relations = [
+            'meta' => function ($query) {
+                $query->select(['metable_id', 'metable_type', 'key', 'value']);
+            },
+
+            'media' => function ($query) {
+                $query->select(['id', 'model_id', 'model_type', 'collection_name', 'file_name', 'disk']);
+            },
+
+            'tags' => function ($query) {
+                $query->select(['id', 'name', 'slug']);
+            },
+        ];
+
+        return $this->model::select(array_merge($defaultColumns, $extColumns))
+            ->with(array_intersect_key($relations, array_flip($with)));
     }
 }
