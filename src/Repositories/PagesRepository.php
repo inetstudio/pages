@@ -39,11 +39,7 @@ class PagesRepository implements PagesRepositoryContract
      */
     public function getItemByID(int $id): PageModelContract
     {
-        if (! (! is_null($id) && $id > 0 && $item = $this->model::find($id))) {
-            $item = $this->model;
-        }
-
-        return $item;
+        return $this->model::find($id) ?? new $this->model;
     }
 
     /**
