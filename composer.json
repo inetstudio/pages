@@ -10,10 +10,10 @@
       }
     ],
     "require": {
-      "inetstudio/admin-panel": "1.5.*",
-      "inetstudio/categories": "1.5.*",
-      "inetstudio/tags": "1.5.*",
-      "inetstudio/polls": "1.5.*"
+      "inetstudio/admin-panel": "1.6.*",
+      "inetstudio/categories": "1.6.*",
+      "inetstudio/tags": "1.6.*",
+      "inetstudio/polls": "1.6.*"
     },
     "autoload": {
       "psr-4": {
