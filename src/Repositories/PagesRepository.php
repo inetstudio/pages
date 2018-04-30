@@ -163,7 +163,7 @@ class PagesRepository implements PagesRepositoryContract
      */
     protected function getItemsQuery($extColumns = [], $with = []): Builder
     {
-        $defaultColumns = ['id', 'title', 'slug'];
+        $defaultColumns = ['id', 'title', 'slug', 'created_at'];
 
         $relations = [
             'meta' => function ($query) {
