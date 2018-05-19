@@ -123,7 +123,7 @@ class PagesRepository implements PagesRepositoryContract
      */
     public function getAllItems(bool $returnBuilder = false)
     {
-        $builder = $this->getItemsQuery(['created_at', 'updated_at'], [])->orderBy('created_at', 'desc');
+        $builder = $this->getItemsQuery(['updated_at'], [])->orderBy('created_at', 'desc');
 
         if ($returnBuilder) {
             return $builder;
