@@ -76,6 +76,11 @@
 
                                     @php
                                         $previewImageMedia = $item->getFirstMedia('preview');
+                                        $previewCrops = config('pages.images.crops.page.preview') ?? [];
+
+                                        foreach ($previewCrops as &$previewCrop) {
+                                            $previewCrop['value'] = isset($previewImageMedia) ? $previewImageMedia->getCustomProperty('crop.'.$previewCrop['name']) : '';
+                                        }
                                     @endphp
 
                                     {!! Form::crop('preview', $previewImageMedia, [
@@ -86,32 +91,7 @@
                                             'filepath' => isset($previewImageMedia) ? url($previewImageMedia->getUrl()) : '',
                                             'filename' => isset($previewImageMedia) ? $previewImageMedia->file_name : '',
                                         ],
-                                        'crops' => [
-                                            [
-                                                'title' => 'Размер 3х4',
-                                                'name' => '3_4',
-                                                'ratio' => '3/4',
-                                                'value' => isset($previewImageMedia) ? $previewImageMedia->getCustomProperty('crop.3_4') : '',
-                                                'size' => [
-                                                    'width' => 384,
-                                                    'height' => 512,
-                                                    'type' => 'min',
-                                                    'description' => 'Минимальный размер области 3x4 — 384x512 пикселей'
-                                                ],
-                                            ],
-                                            [
-                                                'title' => 'Размер 3х2',
-                                                'name' => '3_2',
-                                                'ratio' => '3/2',
-                                                'value' => isset($previewImageMedia) ? $previewImageMedia->getCustomProperty('crop.3_2') : '',
-                                                'size' => [
-                                                    'width' => 768,
-                                                    'height' => 512,
-                                                    'type' => 'min',
-                                                    'description' => 'Минимальный размер области 3x4 — 768x512 пикселей'
-                                                ],
-                                            ],
-                                        ],
+                                        'crops' => $previewCrops,
                                         'additional' => [
                                             [
                                                 'title' => 'Описание',

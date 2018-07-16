@@ -29,7 +29,16 @@ class SavePageRequest extends FormRequest implements SavePageRequestContract
      */
     public function messages(): array
     {
-        return [
+        $previewCrops = config('articles.images.crops.article.preview') ?? [];
+
+        $cropMessages = [];
+
+        foreach ($previewCrops as $previewCrop) {
+            $cropMessages['preview.crop.'.$previewCrop['name'].'.required'] = 'Необходимо выбрать область отображения '.$previewCrop['ratio'];
+            $cropMessages['preview.crop.'.$previewCrop['name'].'.json'] = 'Область отображения '.$previewCrop['ratio'].' должна быть представлена в виде JSON';
+        }
+
+        return array_merge([
             'meta.title.max' => 'Поле «Title» не должно превышать 255 символов',
             'meta.description.max' => 'Поле «Description» не должно превышать 255 символов',
             'meta.keywords.max' => 'Поле «Keywords» не должно превышать 255 символов',
@@ -46,15 +55,13 @@ class SavePageRequest extends FormRequest implements SavePageRequestContract
             'slug.alpha_dash' => 'Поле «URL» может содержать только латинские символы, цифры, дефисы и подчеркивания',
             'slug.max' => 'Поле «URL» не должно превышать 255 символов',
             'slug.unique' => 'Такое значение поля «URL» уже существует',
-
-            'preview.crop.3_2.json' => 'Область отображения 3x2 должна быть представлена в виде JSON',
-            'preview.crop.3_4.json' => 'Область отображения 3x4 должна быть представлена в виде JSON',
+            
             'preview.description.max' => 'Поле «Описание» не должно превышать 255 символов',
             'preview.copyright.max' => 'Поле «Copyright» не должно превышать 255 символов',
             'preview.alt.max' => 'Поле «Alt» не должно превышать 255 символов',
 
             'tags.array' => 'Поле «Теги» должно содержать значение в виде массива',
-        ];
+        ], $cropMessages);
     }
 
     /**
@@ -65,7 +72,18 @@ class SavePageRequest extends FormRequest implements SavePageRequestContract
      */
     public function rules(Request $request): array
     {
-        return [
+        $previewCrops = config('pages.images.crops.page.preview') ?? [];
+
+        $cropRules = [];
+
+        foreach ($previewCrops as $previewCrop) {
+            $cropRules['preview.crop.'.$previewCrop['name']] = [
+                'nullable', 'json',
+                new CropSize($previewCrop['size']['width'], $previewCrop['size']['height'], $previewCrop['size']['type'], $previewCrop['ratio']),
+            ];
+        }
+
+        return array_merge([
             'meta.title' => 'max:255',
             'meta.description' => 'max:255',
             'meta.keywords' => 'max:255',
@@ -80,18 +98,10 @@ class SavePageRequest extends FormRequest implements SavePageRequestContract
             'title' => 'required|max:255',
             'slug' => 'required|alpha_dash|max:255|unique:pages,slug,'.$request->get('page_id'),
 
-            'preview.crop.3_2' => [
-                'nullable', 'json',
-                new CropSize(768, 512, 'min', '3x2'),
-            ],
-            'preview.crop.3_4' => [
-                'nullable', 'json',
-                new CropSize(384, 512, 'min', '3x4'),
-            ],
             'preview.description' => 'max:255',
             'preview.copyright' => 'max:255',
             'preview.alt' => 'max:255',
             'tags' => 'array',
-        ];
+        ], $cropRules);
     }
 }
