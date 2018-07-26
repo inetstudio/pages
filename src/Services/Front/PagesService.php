@@ -5,7 +5,6 @@ namespace InetStudio\Pages\Services\Front;
 use League\Fractal\Manager;
 use League\Fractal\Serializer\DataArraySerializer;
 use InetStudio\Pages\Contracts\Services\Front\PagesServiceContract;
-use InetStudio\Pages\Contracts\Repositories\PagesRepositoryContract;
 
 /**
  * Class PagesService.
@@ -13,18 +12,16 @@ use InetStudio\Pages\Contracts\Repositories\PagesRepositoryContract;
 class PagesService implements PagesServiceContract
 {
     /**
-     * @var PagesRepositoryContract
+     * @var
      */
-    private $repository;
+    public $repository;
 
     /**
      * PagesService constructor.
-     *
-     * @param PagesRepositoryContract $repository
      */
-    public function __construct(PagesRepositoryContract $repository)
+    public function __construct()
     {
-        $this->repository = $repository;
+        $this->repository = app()->make('InetStudio\Pages\Contracts\Repositories\PagesRepositoryContract');
     }
 
     /**

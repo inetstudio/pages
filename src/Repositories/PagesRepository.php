@@ -18,7 +18,7 @@ class PagesRepository implements PagesRepositoryContract
     /**
      * @var PageModelContract
      */
-    private $model;
+    public $model;
 
     /**
      * PagesRepository constructor.
@@ -28,6 +28,28 @@ class PagesRepository implements PagesRepositoryContract
     public function __construct(PageModelContract $model)
     {
         $this->model = $model;
+    }
+
+    /**
+     * Получаем модель репозитория.
+     *
+     * @return PageModelContract
+     */
+    public function getModel()
+    {
+        return $this->model;
+    }
+
+    /**
+     * Возвращаем пустой объект по id.
+     *
+     * @param int $id
+     *
+     * @return mixed
+     */
+    public function getEmptyObjectById(int $id)
+    {
+        return $this->model::select(['id'])->where('id', '=', $id)->first();
     }
 
     /**

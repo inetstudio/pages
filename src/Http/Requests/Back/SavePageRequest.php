@@ -55,7 +55,7 @@ class SavePageRequest extends FormRequest implements SavePageRequestContract
             'slug.alpha_dash' => 'Поле «URL» может содержать только латинские символы, цифры, дефисы и подчеркивания',
             'slug.max' => 'Поле «URL» не должно превышать 255 символов',
             'slug.unique' => 'Такое значение поля «URL» уже существует',
-            
+
             'preview.description.max' => 'Поле «Описание» не должно превышать 255 символов',
             'preview.copyright.max' => 'Поле «Copyright» не должно превышать 255 символов',
             'preview.alt.max' => 'Поле «Alt» не должно превышать 255 символов',
