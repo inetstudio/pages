@@ -23,6 +23,7 @@
     "extra": {
       "laravel": {
         "providers": [
+          "InetStudio\\Pages\\Providers\\PagesBindingsServiceProvider",
           "InetStudio\\Pages\\Providers\\PagesServiceProvider"
         ]
       }

@@ -21,7 +21,6 @@ class PagesServiceProvider extends ServiceProvider
         $this->registerRoutes();
         $this->registerViews();
         $this->registerViewComposers();
-        $this->registerObservers();
     }
 
     /**
@@ -107,62 +106,5 @@ class PagesServiceProvider extends ServiceProvider
 
             $view->with('count', $itemsCount);
         });
-    }
-
-    /**
-     * Регистрация наблюдателей.
-     *
-     * @return void
-     */
-    public function registerObservers(): void
-    {
-        $this->app->make('InetStudio\Pages\Contracts\Models\PageModelContract')::observe($this->app->make('InetStudio\Pages\Contracts\Observers\PageObserverContract'));
-    }
-
-    /**
-     * Регистрация привязок, алиасов и сторонних провайдеров сервисов.
-     *
-     * @return void
-     */
-    public function registerBindings(): void
-    {
-        // Controllers
-        $this->app->bind('InetStudio\Pages\Contracts\Http\Controllers\Back\PagesControllerContract', 'InetStudio\Pages\Http\Controllers\Back\PagesController');
-        $this->app->bind('InetStudio\Pages\Contracts\Http\Controllers\Back\PagesDataControllerContract', 'InetStudio\Pages\Http\Controllers\Back\PagesDataController');
-        $this->app->bind('InetStudio\Pages\Contracts\Http\Controllers\Back\PagesUtilityControllerContract', 'InetStudio\Pages\Http\Controllers\Back\PagesUtilityController');
-
-        // Events
-        $this->app->bind('InetStudio\Pages\Contracts\Events\Back\ModifyPageEventContract', 'InetStudio\Pages\Events\Back\ModifyPageEvent');
-
-        // Models
-        $this->app->bind('InetStudio\Pages\Contracts\Models\PageModelContract', 'InetStudio\Pages\Models\PageModel');
-
-        // Observers
-        $this->app->bind('InetStudio\Pages\Contracts\Observers\PageObserverContract', 'InetStudio\Pages\Observers\PageObserver');
-
-        // Repositories
-        $this->app->bind('InetStudio\Pages\Contracts\Repositories\PagesRepositoryContract', 'InetStudio\Pages\Repositories\PagesRepository');
-
-        // Requests
-        $this->app->bind('InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract', 'InetStudio\Pages\Http\Requests\Back\SavePageRequest');
-
-        // Responses
-        $this->app->bind('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\DestroyResponseContract', 'InetStudio\Pages\Http\Responses\Back\Pages\DestroyResponse');
-        $this->app->bind('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\FormResponseContract', 'InetStudio\Pages\Http\Responses\Back\Pages\FormResponse');
-        $this->app->bind('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\IndexResponseContract', 'InetStudio\Pages\Http\Responses\Back\Pages\IndexResponse');
-        $this->app->bind('InetStudio\Pages\Contracts\Http\Responses\Back\Pages\SaveResponseContract', 'InetStudio\Pages\Http\Responses\Back\Pages\SaveResponse');
-        $this->app->bind('InetStudio\Pages\Contracts\Http\Responses\Back\Utility\SlugResponseContract', 'InetStudio\Pages\Http\Responses\Back\Utility\SlugResponse');
-        $this->app->bind('InetStudio\Pages\Contracts\Http\Responses\Back\Utility\SuggestionsResponseContract', 'InetStudio\Pages\Http\Responses\Back\Utility\SuggestionsResponse');
-
-        // Services
-        $this->app->bind('InetStudio\Pages\Contracts\Services\Back\PagesDataTableServiceContract', 'InetStudio\Pages\Services\Back\PagesDataTableService');
-        $this->app->bind('InetStudio\Pages\Contracts\Services\Back\PagesObserverServiceContract', 'InetStudio\Pages\Services\Back\PagesObserverService');
-        $this->app->bind('InetStudio\Pages\Contracts\Services\Back\PagesServiceContract', 'InetStudio\Pages\Services\Back\PagesService');
-        $this->app->bind('InetStudio\Pages\Contracts\Services\Front\PagesServiceContract', 'InetStudio\Pages\Services\Front\PagesService');
-
-        // Transformers
-        $this->app->bind('InetStudio\Pages\Contracts\Transformers\Back\PageTransformerContract', 'InetStudio\Pages\Transformers\Back\PageTransformer');
-        $this->app->bind('InetStudio\Pages\Contracts\Transformers\Back\SuggestionTransformerContract', 'InetStudio\Pages\Transformers\Back\SuggestionTransformer');
-        $this->app->bind('InetStudio\Pages\Contracts\Transformers\Front\PagesSiteMapTransformerContract', 'InetStudio\Pages\Transformers\Front\PagesSiteMapTransformer');
     }
 }
