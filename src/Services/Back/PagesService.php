@@ -46,13 +46,13 @@ class PagesService implements PagesServiceContract
      * Получаем объекты по списку id.
      *
      * @param array|int $ids
-     * @param bool $returnBuilder
+     * @param array $params
      *
      * @return mixed
      */
-    public function getPagesByIDs($ids, bool $returnBuilder = false)
+    public function getPagesByIDs($ids, array $params = [])
     {
-        return $this->repository->getItemsByIDs($ids, $returnBuilder);
+        return $this->repository->getItemsByIDs($ids, $params);
     }
 
     /**
@@ -66,7 +66,7 @@ class PagesService implements PagesServiceContract
     public function save(SavePageRequestContract $request, int $id): PageModelContract
     {
         $action = ($id) ? 'отредактирована' : 'создана';
-        $item = $this->repository->save($request, $id);
+        $item = $this->repository->save($request->only($this->repository->getModel()->getFillable()), $id);
 
         app()->make('InetStudio\Meta\Contracts\Services\Back\MetaServiceContract')
             ->attachToObject($request, $item);

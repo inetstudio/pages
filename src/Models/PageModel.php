@@ -68,6 +68,46 @@ class PageModel extends Model implements PageModelContract, MetableContract, Has
     protected $revisionCreationsEnabled = true;
 
     /**
+     * Сеттер атрибута title.
+     *
+     * @param $value
+     */
+    public function setTitleAttribute($value)
+    {
+        $this->attributes['title'] = strip_tags($value);
+    }
+
+    /**
+     * Сеттер атрибута slug.
+     *
+     * @param $value
+     */
+    public function setSlugAttribute($value)
+    {
+        $this->attributes['slug'] = strip_tags($value);
+    }
+
+    /**
+     * Сеттер атрибута description.
+     *
+     * @param $value
+     */
+    public function setDescriptionAttribute($value)
+    {
+        $this->attributes['description'] = trim(str_replace("&nbsp;", '', strip_tags((isset($value['text'])) ? $value['text'] : (! is_array($value) ? $value : ''))));
+    }
+
+    /**
+     * Сеттер атрибута content.
+     *
+     * @param $value
+     */
+    public function setContentAttribute($value)
+    {
+        $this->attributes['content'] = trim(str_replace("&nbsp;", ' ', (isset($value['text'])) ? $value['text'] : (! is_array($value) ? $value : '')));
+    }
+
+    /**
      * Настройка полей для поиска.
      *
      * @return array

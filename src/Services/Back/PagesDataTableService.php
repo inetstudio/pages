@@ -49,7 +49,9 @@ class PagesDataTableService extends DataTable implements PagesDataTableServiceCo
      */
     public function query()
     {
-        $query = $this->repository->getAllItems(true);
+        $query = $this->repository->getItemsQuery([
+            'columns' => ['created_at', 'updated_at'],
+        ]);
 
         return $query;
     }

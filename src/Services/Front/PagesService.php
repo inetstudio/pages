@@ -28,26 +28,26 @@ class PagesService implements PagesServiceContract
      * Получаем объект по slug.
      *
      * @param string $slug
-     * @param bool $returnBuilder
+     * @param array $params
      *
      * @return mixed
      */
-    public function getPageBySlug(string $slug, bool $returnBuilder = false)
+    public function getPageBySlug(string $slug, array $params = [])
     {
-        return $this->repository->getItemBySlug($slug, $returnBuilder);
+        return $this->repository->getItemBySlug($slug, $params);
     }
 
     /**
      * Получаем объекты по категории.
      *
      * @param string $categorySlug
-     * @param bool $returnBuilder
+     * @param array $params
      *
      * @return mixed
      */
-    public function getPagesByCategory(string $categorySlug, bool $returnBuilder = false)
+    public function getPagesByCategory(string $categorySlug, array $params = [])
     {
-        return $this->repository->getItemsByCategory($categorySlug, ['description'], ['meta', 'media'], $returnBuilder);
+        return $this->repository->getItemsByCategory($categorySlug, $params);
     }
 
     /**
