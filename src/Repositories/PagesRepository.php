@@ -2,12 +2,10 @@
 
 namespace InetStudio\Pages\Repositories;
 
-use Illuminate\Database\Eloquent\Builder;
 use InetStudio\AdminPanel\Repositories\BaseRepository;
 use InetStudio\Pages\Contracts\Models\PageModelContract;
 use InetStudio\Pages\Contracts\Repositories\PagesRepositoryContract;
 use InetStudio\Categories\Repositories\Traits\CategoriesRepositoryTrait;
-use InetStudio\Pages\Contracts\Http\Requests\Back\SavePageRequestContract;
 
 /**
  * Class PagesRepository.
