@@ -20,7 +20,7 @@ class PagesController extends Controller implements PagesControllerContract
      *
      * @var array
      */
-    private $services;
+    public $services;
 
     /**
      * PagesController constructor.

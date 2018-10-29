@@ -15,6 +15,21 @@ use InetStudio\Pages\Contracts\Http\Responses\Back\Utility\SuggestionsResponseCo
 class PagesUtilityController extends Controller implements PagesUtilityControllerContract
 {
     /**
+     * Используемые сервисы.
+     *
+     * @var array
+     */
+    public $services;
+
+    /**
+     * PagesUtilityController constructor.
+     */
+    public function __construct()
+    {
+        $this->services['pages'] = app()->make('InetStudio\Pages\Contracts\Services\Back\PagesServiceContract');
+    }
+
+    /**
      * Получаем slug для модели по строке.
      *
      * @param Request $request
@@ -23,8 +38,12 @@ class PagesUtilityController extends Controller implements PagesUtilityControlle
      */
     public function getSlug(Request $request): SlugResponseContract
     {
+        $id = (int) $request->get('id');
         $name = $request->get('name');
-        $slug = ($name) ? SlugService::createSlug(app()->make('InetStudio\Pages\Contracts\Models\PageModelContract'), 'slug', $name) : '';
+
+        $model = $this->services['pages']->getPageObject($id);
+
+        $slug = ($name) ? SlugService::createSlug($model, 'slug', $name) : '';
 
         return app()->makeWith('InetStudio\Pages\Contracts\Http\Responses\Back\Utility\SlugResponseContract', [
             'slug' => $slug,

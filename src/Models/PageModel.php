@@ -138,6 +138,7 @@ class PageModel extends Model implements PageModelContract, MetableContract, Has
             'slug' => [
                 'source' => 'title',
                 'unique' => true,
+                'includeTrashed' => true,
             ],
         ];
     }
