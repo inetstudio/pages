@@ -92,7 +92,7 @@ class PagesServiceProvider extends ServiceProvider
     {
         view()->composer('admin.module.pages::back.partials.analytics.materials.statistic', function ($view) {
             $itemsCount = app()->make('InetStudio\Pages\Contracts\Repositories\PagesRepositoryContract')
-                ->getAllItems(true)->count();
+                ->getAllItems()->count();
 
             $view->with('count', $itemsCount);
         });
