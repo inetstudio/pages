@@ -16,13 +16,7 @@ PUT app_index/_mapping/pages
   	},  
 	 "content": {
   	  "type": "text"
-  	 },	
-    "categories": {
-      "type": "nested"
-    },
-    "tags": {
-      "type": "nested"
-    }
+  	 }
   }
 }
 ````

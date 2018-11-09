@@ -7,26 +7,22 @@ use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use InetStudio\Meta\Models\Traits\Metable;
-use InetStudio\Tags\Models\Traits\HasTags;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use InetStudio\Uploads\Models\Traits\HasImages;
 use Venturecraft\Revisionable\RevisionableTrait;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
-use InetStudio\Categories\Models\Traits\HasCategories;
 use InetStudio\Pages\Contracts\Models\PageModelContract;
 use InetStudio\Meta\Contracts\Models\Traits\MetableContract;
 use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
 
 class PageModel extends Model implements PageModelContract, MetableContract, HasMedia
 {
-    use HasTags;
     use Metable;
     use Sluggable;
     use HasImages;
     use Searchable;
     use SoftDeletes;
-    use HasCategories;
     use RevisionableTrait;
     use SluggableScopeHelpers;
     use HasSimpleCountersTrait;
@@ -115,14 +111,6 @@ class PageModel extends Model implements PageModelContract, MetableContract, Has
     public function toSearchableArray()
     {
         $arr = array_only($this->toArray(), ['id', 'title', 'description', 'content']);
-
-        $arr['categories'] = $this->categories->map(function ($item) {
-            return array_only($item->toSearchableArray(), ['id', 'title']);
-        })->toArray();
-
-        $arr['tags'] = $this->tags->map(function ($item) {
-            return array_only($item->toSearchableArray(), ['id', 'name']);
-        })->toArray();
 
         return $arr;
     }

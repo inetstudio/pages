@@ -150,10 +150,6 @@
                                         ],
                                     ]) !!}
 
-                                    {!! Form::categories('', $item) !!}
-
-                                    {!! Form::tags('', $item) !!}
-
                                 </div>
                             </div>
                         </div>
@@ -165,7 +161,4 @@
 
         {!! Form::close()!!}
     </div>
-
-    @include('admin.module.polls::back.pages.modals.form')
-
 @endsection

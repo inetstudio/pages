@@ -71,12 +71,6 @@ class PagesService implements PagesServiceContract
         app()->make('InetStudio\Meta\Contracts\Services\Back\MetaServiceContract')
             ->attachToObject($request, $item);
 
-        app()->make('InetStudio\Categories\Contracts\Services\Back\CategoriesServiceContract')
-            ->attachToObject($request, $item);
-
-        app()->make('InetStudio\Tags\Contracts\Services\Back\TagsServiceContract')
-            ->attachToObject($request, $item);
-
         $images = (config('pages.images.conversions.page')) ? array_keys(config('pages.images.conversions.page')) : [];
         app()->make('InetStudio\Uploads\Contracts\Services\Back\ImagesServiceContract')
             ->attachToObject($request, $item, $images, 'pages', 'page');

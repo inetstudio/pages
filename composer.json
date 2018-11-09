@@ -9,11 +9,6 @@
         "email": "bukin@inetstudio.ru"
       }
     ],
-    "require": {
-      "inetstudio/categories": "1.7.*",
-      "inetstudio/tags": "1.7.*",
-      "inetstudio/polls": "1.7.*"
-    },
     "autoload": {
       "psr-4": {
         "InetStudio\\Pages\\": "src/"
