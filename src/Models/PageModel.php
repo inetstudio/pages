@@ -3,27 +3,28 @@
 namespace InetStudio\Pages\Models;
 
 use Cocur\Slugify\Slugify;
+use Illuminate\Support\Arr;
 use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 use Cviebrock\EloquentSluggable\Sluggable;
 use InetStudio\Meta\Models\Traits\Metable;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use InetStudio\Uploads\Models\Traits\HasImages;
-use Venturecraft\Revisionable\RevisionableTrait;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use InetStudio\Pages\Contracts\Models\PageModelContract;
 use InetStudio\Meta\Contracts\Models\Traits\MetableContract;
 use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
 
-class PageModel extends Model implements PageModelContract, MetableContract, HasMedia
+class PageModel extends Model implements PageModelContract, MetableContract, HasMedia, Auditable
 {
     use Metable;
     use Sluggable;
     use HasImages;
     use Searchable;
     use SoftDeletes;
-    use RevisionableTrait;
+    use \OwenIt\Auditing\Auditable;
     use SluggableScopeHelpers;
     use HasSimpleCountersTrait;
 
@@ -61,7 +62,12 @@ class PageModel extends Model implements PageModelContract, MetableContract, Has
         'deleted_at',
     ];
 
-    protected $revisionCreationsEnabled = true;
+    /**
+     * Should the timestamps be audited?
+     *
+     * @var bool
+     */
+    protected $auditTimestamps = true;
 
     /**
      * Сеттер атрибута title.
@@ -110,7 +116,7 @@ class PageModel extends Model implements PageModelContract, MetableContract, Has
      */
     public function toSearchableArray()
     {
-        $arr = array_only($this->toArray(), ['id', 'title', 'description', 'content']);
+        $arr = Arr::only($this->toArray(), ['id', 'title', 'description', 'content']);
 
         return $arr;
     }
