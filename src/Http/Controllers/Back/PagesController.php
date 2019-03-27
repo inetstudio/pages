@@ -46,7 +46,7 @@ class PagesController extends Controller implements PagesControllerContract
     }
 
     /**
-     * Добавление объекта.
+     * Создание объекта.
      *
      * @return FormResponseContract
      */
