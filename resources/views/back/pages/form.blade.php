@@ -15,7 +15,7 @@
     <div class="wrapper wrapper-content">
         <div class="ibox">
             <div class="ibox-title">
-                <a class="btn btn-sm btn-white m-r-xs" href="{{ route('back.articles.index') }}">
+                <a class="btn btn-sm btn-white m-r-xs" href="{{ route('back.pages.index') }}">
                     <i class="fa fa-arrow-left"></i> Вернуться назад
                 </a>
                 @if ($item->id && $item->href)
