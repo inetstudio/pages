@@ -47,7 +47,7 @@ class CreateFoldersCommand extends Command
      *
      * @param $path
      */
-    private function createDir($path): void
+    protected function createDir($path): void
     {
         if (! is_dir($path)) {
             mkdir($path, 0777, true);

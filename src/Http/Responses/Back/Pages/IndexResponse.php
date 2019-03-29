@@ -14,7 +14,7 @@ class IndexResponse implements IndexResponseContract, Responsable
     /**
      * @var array
      */
-    private $data;
+    protected $data;
 
     /**
      * IndexResponse constructor.

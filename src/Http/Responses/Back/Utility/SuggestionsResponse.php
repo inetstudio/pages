@@ -14,7 +14,7 @@ class SuggestionsResponse implements SuggestionsResponseContract, Responsable
     /**
      * @var array
      */
-    private $suggestions;
+    protected $suggestions;
 
     /**
      * SuggestionsResponse constructor.

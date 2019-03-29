@@ -18,7 +18,7 @@ class PagesService implements PagesServiceContract
     /**
      * @var PagesRepositoryContract
      */
-    private $repository;
+    protected $repository;
 
     /**
      * PagesService constructor.

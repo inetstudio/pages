@@ -66,7 +66,7 @@ class SetupCommand extends Command
      *
      * @return void
      */
-    private function initCommands(): void
+    protected function initCommands(): void
     {
         $this->calls = [
             [

@@ -13,7 +13,7 @@ class PagesDataTableService extends DataTable implements PagesDataTableServiceCo
     /**
      * @var PagesRepositoryContract
      */
-    private $repository;
+    protected $repository;
 
     /**
      * PagesService constructor.

@@ -14,7 +14,7 @@ class DestroyResponse implements DestroyResponseContract, Responsable
     /**
      * @var bool
      */
-    private $result;
+    protected $result;
 
     /**
      * DestroyResponse constructor.

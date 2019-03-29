@@ -14,7 +14,7 @@ class FormResponse implements FormResponseContract, Responsable
     /**
      * @var array
      */
-    private $data;
+    protected $data;
 
     /**
      * FormResponse constructor.

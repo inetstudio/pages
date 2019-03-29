@@ -108,7 +108,7 @@ class PagesController extends Controller implements PagesControllerContract
      *
      * @return SaveResponseContract
      */
-    private function save(SavePageRequestContract $request, int $id = 0): SaveResponseContract
+    protected function save(SavePageRequestContract $request, int $id = 0): SaveResponseContract
     {
         $item = $this->services['pages']->save($request, $id);
 

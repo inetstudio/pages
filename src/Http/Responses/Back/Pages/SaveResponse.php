@@ -15,7 +15,7 @@ class SaveResponse implements SaveResponseContract, Responsable
     /**
      * @var PageModelContract
      */
-    private $item;
+    protected $item;
 
     /**
      * SaveResponse constructor.

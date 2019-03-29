@@ -14,7 +14,7 @@ class SlugResponse implements SlugResponseContract, Responsable
     /**
      * @var string
      */
-    private $slug;
+    protected $slug;
 
     /**
      * SlugResponse constructor.
