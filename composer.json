@@ -1,25 +1,30 @@
 {
-    "name": "inetstudio/pages",
-    "description": "Package for pages",
-    "homepage": "https://github.com/inetstudio/pages",
-    "license": "MIT",
-    "authors": [
-      {
-        "name": "Konstantin Bukin",
-        "email": "bukin@inetstudio.ru"
-      }
-    ],
-    "autoload": {
-      "psr-4": {
-        "InetStudio\\Pages\\": "src/"
-      }
-    },
-    "extra": {
-      "laravel": {
-        "providers": [
-          "InetStudio\\Pages\\Providers\\PagesBindingsServiceProvider",
-          "InetStudio\\Pages\\Providers\\PagesServiceProvider"
-        ]
-      }
+  "name": "inetstudio/pages",
+  "description": "Package for pages",
+  "homepage": "https://github.com/inetstudio/pages",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Konstantin Bukin",
+      "email": "bukin@inetstudio.ru"
     }
+  ],
+  "require": {
+    "inetstudio/admin-panel": "1.8.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "InetStudio\\PagesPackage\\": "package/src",
+      "InetStudio\\PagesPackage\\Pages\\": "entities/pages/src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "InetStudio\\PagesPackage\\Providers\\ServiceProvider",
+        "InetStudio\\PagesPackage\\Pages\\Providers\\BindingsServiceProvider",
+        "InetStudio\\PagesPackage\\Pages\\Providers\\ServiceProvider"
+      ]
+    }
+  }
 }
