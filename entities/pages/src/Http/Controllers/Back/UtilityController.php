@@ -8,8 +8,8 @@ use InetStudio\AdminPanel\Base\Http\Controllers\Controller;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use InetStudio\PagesPackage\Pages\Contracts\Services\Back\ItemsServiceContract;
 use InetStudio\PagesPackage\Pages\Contracts\Services\Back\UtilityServiceContract;
-use InetStudio\PagesPackage\Pages\Contracts\Http\Responses\Back\Utility\SlugResponseContract;
 use InetStudio\PagesPackage\Pages\Contracts\Http\Controllers\Back\UtilityControllerContract;
+use InetStudio\PagesPackage\Pages\Contracts\Http\Responses\Back\Utility\SlugResponseContract;
 use InetStudio\PagesPackage\Pages\Contracts\Http\Responses\Back\Utility\SuggestionsResponseContract;
 
 /**
