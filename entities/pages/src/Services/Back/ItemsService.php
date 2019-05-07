@@ -41,8 +41,9 @@ class ItemsService extends BaseService implements ItemsServiceContract
         $itemData = Arr::only($data, $this->model->getFillable());
         $item = $this->saveModel($itemData, $id);
 
-        app()->make('InetStudio\Meta\Contracts\Services\Back\MetaServiceContract')
-            ->attachToObject(request(), $item);
+        $metaData = Arr::get($data, 'meta', []);
+        app()->make('InetStudio\MetaPackage\Meta\Contracts\Services\Back\ItemsServiceContract')
+            ->attachToObject($metaData, $item);
 
         $images = (config('pages.images.conversions.page')) ? array_keys(config('pages.images.conversions.page')) : [];
         app()->make('InetStudio\Uploads\Contracts\Services\Back\ImagesServiceContract')

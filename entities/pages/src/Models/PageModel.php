@@ -7,10 +7,10 @@ use Laravel\Scout\Searchable;
 use OwenIt\Auditing\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
-use InetStudio\Meta\Models\Traits\Metable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use InetStudio\Uploads\Models\Traits\HasImages;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use InetStudio\MetaPackage\Meta\Models\Traits\HasMeta;
 use InetStudio\AdminPanel\Base\Models\Traits\SluggableTrait;
 use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
 use InetStudio\PagesPackage\Pages\Contracts\Models\PageModelContract;
@@ -21,7 +21,7 @@ use InetStudio\AdminPanel\Base\Models\Traits\Scopes\BuildQueryScopeTrait;
  */
 class PageModel extends Model implements PageModelContract
 {
-    use Metable;
+    use HasMeta;
     use Auditable;
     use Sluggable;
     use HasImages;
