@@ -12,9 +12,9 @@ use InetStudio\Uploads\Models\Traits\HasImages;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use InetStudio\MetaPackage\Meta\Models\Traits\HasMeta;
 use InetStudio\AdminPanel\Base\Models\Traits\SluggableTrait;
-use InetStudio\SimpleCounters\Models\Traits\HasSimpleCountersTrait;
 use InetStudio\PagesPackage\Pages\Contracts\Models\PageModelContract;
 use InetStudio\AdminPanel\Base\Models\Traits\Scopes\BuildQueryScopeTrait;
+use InetStudio\SimpleCounters\Counters\Models\Traits\HasSimpleCountersTrait;
 
 /**
  * Class PageModel.
