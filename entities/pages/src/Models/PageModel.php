@@ -111,7 +111,6 @@ class PageModel extends Model implements PageModelContract
             'slug' => [
                 'source' => 'title',
                 'unique' => true,
-                'includeTrashed' => true,
             ],
         ];
     }
