@@ -10,8 +10,8 @@
     }
   ],
   "require": {
-    "inetstudio/admin-panel": "^7.0",
-    "inetstudio/simple-counters": "^7.0"
+    "inetstudio/admin-panel": "^8.0",
+    "inetstudio/simple-counters": "^8.0"
   },
   "autoload": {
     "psr-4": {
