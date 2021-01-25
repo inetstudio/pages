@@ -2,6 +2,7 @@
 
 namespace InetStudio\PagesPackage\Pages\Models;
 
+use Cocur\Slugify\Slugify;
 use Illuminate\Support\Arr;
 use Laravel\Scout\Searchable;
 use OwenIt\Auditing\Auditable;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use InetStudio\Uploads\Models\Traits\HasImages;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use InetStudio\MetaPackage\Meta\Models\Traits\HasMeta;
-use InetStudio\AdminPanel\Base\Models\Traits\SluggableTrait;
+use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use InetStudio\PagesPackage\Pages\Contracts\Models\PageModelContract;
 use InetStudio\AdminPanel\Base\Models\Traits\Scopes\BuildQueryScopeTrait;
 use InetStudio\SimpleCounters\Counters\Models\Traits\HasSimpleCountersTrait;
@@ -27,8 +28,8 @@ class PageModel extends Model implements PageModelContract
     use HasImages;
     use Searchable;
     use SoftDeletes;
-    use SluggableTrait;
     use BuildQueryScopeTrait;
+    use SluggableScopeHelpers;
     use HasSimpleCountersTrait;
 
     /**
@@ -215,5 +216,48 @@ class PageModel extends Model implements PageModelContract
     public function getHrefAttribute(): string
     {
         return url(self::HREF.($this->getAttribute('slug') ?: $this->getAttribute('id')));
+    }
+
+    public function customizeSlugEngine(Slugify $engine)
+    {
+        $rules = [
+            'а' => 'a',
+            'б' => 'b',
+            'в' => 'v',
+            'г' => 'g',
+            'д' => 'd',
+            'е' => 'e',
+            'ё' => 'jo',
+            'ж' => 'zh',
+            'з' => 'z',
+            'и' => 'i',
+            'й' => 'j',
+            'к' => 'k',
+            'л' => 'l',
+            'м' => 'm',
+            'н' => 'n',
+            'о' => 'o',
+            'п' => 'p',
+            'р' => 'r',
+            'с' => 's',
+            'т' => 't',
+            'у' => 'u',
+            'ф' => 'f',
+            'х' => 'h',
+            'ц' => 'c',
+            'ч' => 'ch',
+            'ш' => 'sh',
+            'щ' => 'shh',
+            'ъ' => '',
+            'ы' => 'y',
+            'ь' => '',
+            'э' => 'je',
+            'ю' => 'ju',
+            'я' => 'ja',
+        ];
+
+        $engine->addRules($rules);
+
+        return $engine;
     }
 }
