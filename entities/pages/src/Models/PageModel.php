@@ -106,7 +106,7 @@ class PageModel extends Model implements PageModelContract
      *
      * @return array
      */
-    public function sluggable()
+    public function sluggable(): array
     {
         return [
             'slug' => [
