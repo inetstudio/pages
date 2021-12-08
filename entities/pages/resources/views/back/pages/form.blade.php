@@ -49,7 +49,7 @@
 
                             {!! Form::meta('', $item) !!}
 
-                            {!! Form::social_meta('', $item) !!}
+                            {!! Form::social_meta('', $item, ['config' => config('pages.images.og_image') ?? []]) !!}
 
                             <div class="panel panel-default">
                                 <div class="panel-heading">
@@ -83,81 +83,24 @@
                                             ],
                                         ]) !!}
 
-                                        @php
-                                            $previewImageMedia = $item->getFirstMedia('preview');
-                                            $previewCrops = config('pages.images.crops.page.preview') ?? [];
+                                        <x-inetstudio.uploads-package.uploads::fields.back.media
+                                            label="Превью"
+                                            field-name="preview"
+                                            :item="$item"
+                                        />
 
-                                            foreach ($previewCrops as &$previewCrop) {
-                                                $previewCrop['value'] = isset($previewImageMedia) ? $previewImageMedia->getCustomProperty('crop.'.$previewCrop['name']) : '';
-                                            }
-                                        @endphp
+                                        <x-inetstudio.admin-panel.base::fields.back.wysiwyg
+                                            label="Лид"
+                                            field-name="description"
+                                            :item="$item"
+                                            :simple="true"
+                                        />
 
-                                        {!! Form::crop('preview', $previewImageMedia, [
-                                            'label' => [
-                                                'title' => 'Превью',
-                                            ],
-                                            'image' => [
-                                                'filepath' => isset($previewImageMedia) ? url($previewImageMedia->getUrl()) : '',
-                                                'filename' => isset($previewImageMedia) ? $previewImageMedia->file_name : '',
-                                            ],
-                                            'crops' => $previewCrops,
-                                            'additional' => [
-                                                [
-                                                    'title' => 'Описание',
-                                                    'name' => 'description',
-                                                    'value' => isset($previewImageMedia) ? $previewImageMedia->getCustomProperty('description') : '',
-                                                ],
-                                                [
-                                                    'title' => 'Copyright',
-                                                    'name' => 'copyright',
-                                                    'value' => isset($previewImageMedia) ? $previewImageMedia->getCustomProperty('copyright') : '',
-                                                ],
-                                                [
-                                                    'title' => 'Alt',
-                                                    'name' => 'alt',
-                                                    'value' => isset($previewImageMedia) ? $previewImageMedia->getCustomProperty('alt') : '',
-                                                ],
-                                            ],
-                                        ]) !!}
-
-                                        {!! Form::wysiwyg('description', $item->description, [
-                                            'label' => [
-                                                'title' => 'Лид',
-                                            ],
-                                            'field' => [
-                                                'class' => 'tinymce-simple',
-                                                'type' => 'simple',
-                                                'id' => 'description',
-                                            ],
-                                        ]) !!}
-
-                                        {!! Form::wysiwyg('content', $item->content, [
-                                            'label' => [
-                                                'title' => 'Содержимое',
-                                            ],
-                                            'field' => [
-                                                'class' => 'tinymce',
-                                                'id' => 'content',
-                                                'hasImages' => true,
-                                            ],
-                                            'images' => [
-                                                'media' => $item->getMedia('content'),
-                                                'fields' => [
-                                                    [
-                                                        'title' => 'Описание',
-                                                        'name' => 'description',
-                                                    ],
-                                                    [
-                                                        'title' => 'Copyright',
-                                                        'name' => 'copyright',
-                                                    ],
-                                                    [
-                                                        'title' => 'Alt',
-                                                        'name' => 'alt',
-                                                    ],
-                                                ],
-                                            ],
-                                        ]) !!}
+                                        <x-inetstudio.admin-panel.base::fields.back.wysiwyg
+                                            label="Содержимое"
+                                            field-name="content"
+                                            :item="$item"
+                                        />
 
                                     </div>
                                 </div>

@@ -3,7 +3,7 @@
 namespace InetStudio\PagesPackage\Pages\Http\Requests\Back;
 
 use Illuminate\Foundation\Http\FormRequest;
-use InetStudio\Uploads\Validation\Rules\CropSize;
+use InetStudio\UploadsPackage\Uploads\Validation\Rules\CropSize;
 use InetStudio\PagesPackage\Pages\Contracts\Http\Requests\Back\SaveItemRequestContract;
 
 /**
@@ -102,7 +102,7 @@ class SaveItemRequest extends FormRequest implements SaveItemRequestContract
                 ],
 
                 'title' => 'required|max:255',
-                'slug' => 'required|alpha_dash|max:255|unique:pages,slug,'.$this->get('page_id'),
+                //'slug' => 'required|alpha_dash|max:255|unique:pages,slug,'.$this->get('page_id'),
 
                 'preview.description' => 'max:255',
                 'preview.copyright' => 'max:255',

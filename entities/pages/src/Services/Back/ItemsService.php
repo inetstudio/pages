@@ -5,35 +5,16 @@ namespace InetStudio\PagesPackage\Pages\Services\Back;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Session;
 use InetStudio\AdminPanel\Base\Services\BaseService;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use InetStudio\PagesPackage\Pages\Contracts\Models\PageModelContract;
 use InetStudio\PagesPackage\Pages\Contracts\Services\Back\ItemsServiceContract;
 
-/**
- * Class ItemsService.
- */
 class ItemsService extends BaseService implements ItemsServiceContract
 {
-    /**
-     * ItemsService constructor.
-     *
-     * @param  PageModelContract  $model
-     */
     public function __construct(PageModelContract $model)
     {
         parent::__construct($model);
     }
 
-    /**
-     * Сохраняем модель.
-     *
-     * @param  array  $data
-     * @param  int  $id
-     *
-     * @return PageModelContract
-     *
-     * @throws BindingResolutionException
-     */
     public function save(array $data, int $id): PageModelContract
     {
         $action = ($id) ? 'отредактирована' : 'создана';
@@ -45,9 +26,13 @@ class ItemsService extends BaseService implements ItemsServiceContract
         app()->make('InetStudio\MetaPackage\Meta\Contracts\Services\Back\ItemsServiceContract')
             ->attachToObject($metaData, $item);
 
-        $images = (config('pages.images.conversions.page')) ? array_keys(config('pages.images.conversions.page')) : [];
-        app()->make('InetStudio\Uploads\Contracts\Services\Back\ImagesServiceContract')
-            ->attachToObject(request(), $item, $images, 'pages', 'page');
+        resolve(
+            'InetStudio\UploadsPackage\Uploads\Contracts\Actions\AttachMediaToObjectActionContract',
+            [
+                'item' => $item,
+                'media' => Arr::get($data, 'media', []),
+            ]
+        )->execute();
 
         $item->searchable();
 
@@ -63,11 +48,6 @@ class ItemsService extends BaseService implements ItemsServiceContract
         return $item;
     }
 
-    /**
-     * Возвращаем статистику по страницам.
-     *
-     * @return mixed
-     */
     public function getPagesStatistic()
     {
         return $this->model::count();

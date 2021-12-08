@@ -9,7 +9,7 @@ use OwenIt\Auditing\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use InetStudio\Uploads\Models\Traits\HasImages;
+use InetStudio\UploadsPackage\Uploads\Models\Traits\HasMedia;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use InetStudio\MetaPackage\Meta\Models\Traits\HasMeta;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
@@ -17,60 +17,26 @@ use InetStudio\PagesPackage\Pages\Contracts\Models\PageModelContract;
 use InetStudio\AdminPanel\Base\Models\Traits\Scopes\BuildQueryScopeTrait;
 use InetStudio\SimpleCounters\Counters\Models\Traits\HasSimpleCountersTrait;
 
-/**
- * Class PageModel.
- */
 class PageModel extends Model implements PageModelContract
 {
     use HasMeta;
+    use HasMedia;
     use Auditable;
     use Sluggable;
-    use HasImages;
     use Searchable;
     use SoftDeletes;
     use BuildQueryScopeTrait;
     use SluggableScopeHelpers;
     use HasSimpleCountersTrait;
 
-    /**
-     * Тип сущности.
-     */
     const ENTITY_TYPE = 'page';
 
-    /**
-     * Часть слага для сущности.
-     */
     const HREF = '/page/';
 
-    /**
-     * Should the timestamps be audited?
-     *
-     * @var bool
-     */
-    protected $auditTimestamps = true;
+    protected bool $auditTimestamps = true;
 
-    /**
-     * Настройки для генерации изображений.
-     *
-     * @var array
-     */
-    protected $images = [
-        'config' => 'pages',
-        'model' => 'page',
-    ];
-
-    /**
-     * Связанная с моделью таблица.
-     *
-     * @var string
-     */
     protected $table = 'pages';
 
-    /**
-     * Атрибуты, для которых разрешено массовое назначение.
-     *
-     * @var array
-     */
     protected $fillable = [
         'title',
         'slug',
@@ -78,22 +44,12 @@ class PageModel extends Model implements PageModelContract
         'content',
     ];
 
-    /**
-     * Атрибуты, которые должны быть преобразованы в даты.
-     *
-     * @var array
-     */
     protected $dates = [
         'created_at',
         'updated_at',
         'deleted_at',
     ];
 
-    /**
-     * Настройка полей для поиска.
-     *
-     * @return array
-     */
     public function toSearchableArray()
     {
         $arr = Arr::only($this->toArray(), ['id', 'title', 'description', 'content']);
@@ -259,5 +215,10 @@ class PageModel extends Model implements PageModelContract
         $engine->addRules($rules);
 
         return $engine;
+    }
+
+    public function getMediaConfig(): array
+    {
+        return config('pages.media', []);
     }
 }
